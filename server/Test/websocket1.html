@@ -1,0 +1,175 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket 聊天室</title>
+    <style>
+        /* CSS样式开始 */
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #chatContainer {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        #messages {
+            border: 1px solid #ddd;
+            padding: 10px;
+            width: 100%;
+            height: 80%;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #messages p {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        #messages .received {
+            background-color: #e0f7fa;
+            align-self: flex-start;
+        }
+
+        #messages .sent {
+            background-color: #fff9c4;
+            align-self: flex-end;
+        }
+
+        #textInputForm {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+        }
+
+        #textInputForm input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        #textInputForm button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #textInputForm button:hover {
+            background-color: #0056b3;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            color: #333;
+        }
+
+        #textInputForm label {
+            display: none;
+        }
+        /* CSS样式结束 */
+    </style>
+</head>
+<body>
+<div id="chatContainer">
+    <h1>canyang聊天室</h1>
+    <div id="messages"></div>
+    <form id="textInputForm">
+        <input type="text" id="textInput" name="textInput" placeholder="请输入消息..." required>
+        <button type="submit">发送</button>
+    </form>
+</div>
+<script>
+    // WebSocket 服务器的 URL
+    const wsUrl = 'ws://localhost:8888/api/v1/chat/ws?account_num=2526741449765031936';
+
+    // 创建 WebSocket 连接
+    const ws = new WebSocket(wsUrl);
+
+    ws.onopen = function(event) {
+        console.log('连接已打开', event);
+        addMessage('已连接到服务器.', 'sent');
+    };
+
+    ws.onmessage = function(event) {
+        console.log('收到消息', event);
+        addMessage(`收到: ${event.data}`, 'received');
+    };
+
+    ws.onclose = function(event) {
+        console.log('连接已关闭', event);
+        addMessage('已从服务器断开.', 'sent');
+    };
+
+    ws.onerror = function(error) {
+        console.error('WebSocket 错误', error);
+    };
+
+    function addMessage(message, type = 'received') {
+        const messagesDiv = document.getElementById('messages');
+
+        const p = document.createElement('p');
+        p.textContent = message;
+        p.classList.add(type);
+        messagesDiv.appendChild(p);
+
+        // 滚动到底部
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    document.getElementById('textInputForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        let userInput = document.getElementById('textInput').value;
+        data = JSON.stringify({
+            SenderAccountNum : "2526741449765031936",
+            ReceiverAccountNum : "2526837006911148032",
+            handlerName : "SendText",
+            content :userInput, // 定义字段名及类型
+        })
+        const jsonData = JSON.stringify({
+            data:      data,
+            accountNum: "2526741449765031936",
+            receiver:   "2526837006911148032",
+            type:       "SendText",
+        })
+        ws.send(jsonData);
+        console.log('消息已发送', jsonData);
+        addMessage(`发送: ${userInput}`, 'sent');
+        document.getElementById('textInput').value = ''; // 清空输入框
+    });
+</script>
+</body>
+</html>

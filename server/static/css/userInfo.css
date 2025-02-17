@@ -1,0 +1,88 @@
+#usersInfoDiv{
+    display: flex; /* 启用 Flexbox 布局 */
+    max-width: 1200px; /* 最大宽度 */
+    height: 170px; /* 高度 */
+    margin: 0 auto; /* 居中 */
+    padding: 10px; /* 内边距 */
+    background-color: #f8f9fa; /* 背景颜色 */
+    border-radius: 10px; /* 圆角边框 */
+}
+#userInfo {
+    position: relative;
+    background: linear-gradient(145deg, #ffffff 0%, #f9f9f9 100%); /* 微渐变背景 */
+    border-radius: 12px; /* 更柔和的圆角 */
+    padding: 24px; /* 扩大内部空间 */
+    box-shadow:
+            0 6px 20px rgba(0, 0, 0, 0.08), /* 主阴影层 */
+            inset 0 2px 4px rgba(255, 255, 255, 0.5); /* 内发光效果 */
+    border: none;
+    width: 400px;
+    max-width: 95%; /* 响应式调整 */
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); /* 丝滑过渡曲线 */
+    overflow: hidden; /* 超出裁剪 */
+}
+
+/* 容器悬停动态 */
+#userInfo:hover {
+    transform: translateY(-6px) scale(1.02); /* 组合动画 */
+    box-shadow:
+            0 12px 32px rgba(0, 86, 179, 0.15), /* 悬浮阴影加强 */
+            inset 0 3px 6px rgba(255, 255, 255, 0.6);
+}
+
+/* 标题美化 */
+#userInfo h4 {
+    margin: 0 0 1.2rem; /* 统一间距系统 */
+    font-size: 1.5rem;
+    color: #2c3e50; /* 深蓝灰色系 */
+    font-weight: 600; /* 中等粗度更现代 */
+    text-align: center;
+    position: relative;
+    letter-spacing: -0.03em; /* 紧凑字距 */
+}
+
+/* 标题装饰线 */
+#userInfo h4::after {
+    content: '';
+    display: block;
+    width: 92px;
+    height: 3px;
+    background: #3498db; /* 点睛蓝色 */
+    margin: 0.8rem auto 0;
+    border-radius: 2px;
+    opacity: 0.8;
+    transition: width 0.3s ease; /* 互动动画 */
+}
+
+#userInfo:hover h4::after {
+    width: 128px; /* 悬浮延长 */
+}
+
+/* 段落优化 */
+#userInfo p {
+    margin: 1em 0;
+    font-size: 0.95rem; /* 采用相对单位 */
+    color: #4a5763; /* 柔和灰蓝色 */
+    line-height: 1.7; /* 更舒适的阅读行高 */
+    padding-left: 1.2rem; /* 阅读基准线对齐 */
+    position: relative;
+}
+
+/* 段落引导符 */
+#userInfo p::before {
+    content: "•";
+    color: #3498db; /* 与标题装饰同色系 */
+    position: absolute;
+    left: 0;
+    opacity: 0.6;
+}
+
+/* 首尾段落特殊处理 */
+#userInfo p:first-of-type {
+    margin-top: -0.4rem; /* 紧凑起始间距 */
+}
+
+#userInfo p:last-of-type {
+    margin-bottom: 0.5rem;
+    font-weight: 500; /* 尾段加强视觉 */
+}

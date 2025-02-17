@@ -1,0 +1,12 @@
+go 1.23.3
+
+use (
+	Test/ETCD
+	./Test/User
+	rabbitmq
+	./app/Message
+	./app/User
+	server
+	./rpc
+	app/Friend
+)

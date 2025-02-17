@@ -1,0 +1,42 @@
+syntax = "proto3"; // 版本声明，使用Protocol Buffers v3版本
+
+option go_package = "/rpc/Message";  // 指定生成的Go代码在你项目中的导入路径
+
+package pb; // 包名
+message RefreshRequest {// 定义消息类型
+  string SenderAccountNum = 1;
+  string ReceiverAccountNum = 2;
+  string handlerName = 5;
+}
+message RefreshTextResponse { // 定义消息类型
+  repeated text content = 1; // 定义字段名及类型
+  string SenderAccountNum = 2;
+  string ReceiverAccountNum = 3;
+  string msg = 4;
+  int32 code = 5;
+  string handlerName = 6;
+}
+message text { // 定义消息类型
+  string content = 1;
+  string time = 2;
+  string senderAccountNum = 3;
+  string receiverAccountNum = 4;
+  }
+message SendTextRequest {// 定义消息类型
+  string SenderAccountNum = 1;
+  string ReceiverAccountNum = 2;
+  string handlerName = 5;
+  string content = 6; // 定义字段名及类型
+  bytes time = 7;
+}
+message SendTextResponse {// 定义消息类型
+  string msg = 1;
+  int32 code = 2;
+  string handlerName = 3;
+}
+
+
+service MessageService { // 定义服务名
+  rpc SendText (SendTextRequest) returns (SendTextResponse) {} // 定义方法名及参数和返回值类型
+  rpc RefreshText (RefreshRequest) returns (RefreshTextResponse) {} // 定义方法名及参数和返回值类型
+}

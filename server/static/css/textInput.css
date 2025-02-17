@@ -1,0 +1,89 @@
+#textInputForm {
+    display: flex;
+    gap: 12px; /* 元素间优雅间隔 */
+    width: 100%;
+    position: relative;
+    filter: drop-shadow(0 4px 6px rgba(0, 67, 163, 0.08)); /* 整体投射阴影 */
+}
+
+#textInputForm input {
+    flex: 1;
+    padding: 14px 20px;
+    border: 1.5px solid #e0e6eb;
+    border-radius: 8px;
+    background: rgba(249, 251, 253, 0.8); /* 半透明背景 */
+    font-size: 0.95rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(2px); /* 毛玻璃效果 */
+}
+
+/* 输入框动态聚焦效果 */
+#textInputForm input:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+    background: #ffffff;
+    transform: scale(1.005);
+}
+
+/* 输入框占位符美化 */
+#textInputForm input::placeholder {
+    color: #94a3b8;
+    letter-spacing: 0.03em;
+}
+
+#textInputForm button {
+    padding: 14px 32px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%); /* 渐变色按钮 */
+    color: white;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition:
+            transform 0.2s ease,
+            box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+            background 0.3s ease;
+    box-shadow:
+            0 4px 6px rgba(66, 153, 225, 0.12),
+            0 2px 4px rgba(0, 0, 0, 0.05); /* 立体阴影 */
+}
+
+/* 按钮悬浮魔法效果 */
+#textInputForm button:hover {
+    background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%);
+    transform: translateY(-1.5px);
+    box-shadow:
+            0 6px 12px -1px rgba(66, 153, 225, 0.25),
+            0 3px 6px -2px rgba(0, 0, 0, 0.08);
+}
+
+/* 按钮点击动画 */
+#textInputForm button:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* 加载状态指示器 */
+#textInputForm button::after {
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    vertical-align: -0.1em;
+}
+
+#textInputForm button.loading::after {
+    opacity: 1;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}

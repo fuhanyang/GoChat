@@ -1,0 +1,11 @@
+app:
+  host: localhost
+  port: 8080
+  mode: test
+  name: Test App
+  version: 1.0.0
+  rabbitmq:
+    host: "some-rabbit"
+    port: 5672
+    username: "root"
+    password: "root"

@@ -1,0 +1,73 @@
+syntax = "proto3"; // 版本声明，使用Protocol Buffers v3版本
+
+option go_package = "/rpc/User";  // 指定生成的Go代码在你项目中的导入路径
+
+package pb; // 包名
+
+
+// 定义服务
+service UserService {
+  // 定义方法
+  rpc Login (LoginRequest) returns (LoginResponse) {}
+  rpc Register (RegisterRequest) returns (RegisterResponse) {}
+  rpc LogOff (LogOffRequest)returns (LogOffResponse) {}
+  rpc FindUser (FindUserRequest) returns (FindUserResponse) {}
+  rpc MatchAUser (MatchAUserRequest) returns (MatchAUserResponse) {}
+}
+message LoginRequest {
+  string accountNum = 1;
+  string password = 2;
+  string ip = 4;
+  string handlerName = 5;
+}
+message RegisterRequest {
+  string username = 1;
+  string password = 2;
+  string passwordConfirm = 3;
+  string ip = 5;
+  string handlerName = 4;
+}
+message LoginResponse {
+  string msg = 1;
+  int32 code = 2;
+  string handlerName = 3;
+}
+message RegisterResponse {
+  string msg = 1;
+  int32 code = 2;
+  string accountNum = 3;
+  string handlerName = 4;
+}
+message LogOffRequest {
+  string accountNum = 1;
+  string password = 2;
+  string ip = 4;
+  string handlerName = 5;
+}
+message LogOffResponse {
+  string msg = 1;
+  int32 code = 2;
+  string handlerName = 3;
+}
+message FindUserRequest {
+  string accountNum = 1;
+  string handlerName = 5;
+}
+message FindUserResponse {
+  string msg = 1;
+  int32 code = 2;
+  string username = 3;
+  string handlerName = 4;
+}
+message MatchAUserRequest {
+  string accountNum = 1;
+  string handlerName = 2;
+}
+message MatchAUserResponse {
+  string msg = 1;
+  int32 code = 2;
+  string accountNum = 3;
+  string userAccountNum = 4;
+  string username = 5;
+  string handlerName = 6;
+}

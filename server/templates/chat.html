@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket 聊天室</title>
+    <link rel="stylesheet" href="../static/css/chat.css">
+    <link rel="stylesheet" href="../static/css/friend.css">
+    <link rel="stylesheet" href="../static/css/userInfo.css">
+    <link rel="stylesheet" href="../static/css/description.css">
+    <link rel="stylesheet" href="../static/css/message.css">
+    <link rel="stylesheet" href="../static/css/textInput.css">
+</head>
+<body>
+<script src="../static/js/showLogoff.js"></script>
+<div id="chatContainer">
+    <!-- 登录成功后的欢迎信息 -->
+    <h1>欢迎, {{ .account_num }}!</h1>
+    <!-- 图标 -->
+    <div id="user-icon" onmouseover="showLogoff()" onmouseout="hideLogoff()">
+        <img src="../static/images/user-icon.png" alt="用户图标" width="45" height="45">
+        <div id="logoff">
+            <button onclick="logoff()">登出</button>
+        </div>
+    </div>
+    <div id="friends">
+        <h2>你可以与其他用户匹配后进行聊天</h2>
+        <div id="description">
+            <h3>好友列表</h3>
+            <div id="addFriendDiv">
+                <button onclick="addFriend()">添加好友</button>
+            </div>
+        </div>
+        <div id="usersInfoDiv">
+            <div id="userInfo">
+                <!-- 这里显示好友信息 -->
+                <h4>当前好友信息</h4>
+            </div>
+            <div id="friendListScrollWrapper">
+                <ul id="friendList">
+                    <!-- 好友列表动态加载 -->
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="messages"></div>
+    <form id="textInputForm">
+        <label for="textInput"></label><input type="text" id="textInput" placeholder="请输入消息..." required>
+        <button type="submit">发送</button>
+    </form>
+</div>
+<script src="../static/js/user.js"></script>
+<script src="../static/js/jwt.js"></script>
+<script src="../static/js/chat.js"></script>
+<script src="../static/js/friend.js"></script>
+</body>
+</html>

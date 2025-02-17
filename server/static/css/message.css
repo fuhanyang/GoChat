@@ -1,0 +1,75 @@
+#messages {
+    width: 100%;
+    height: 80vh;
+    /*padding: 12px;*/
+    overflow-y: auto;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+/* 消息基础样式 */
+#messages p {
+    margin: 6px ;
+    padding: 10px 16px;
+    border-radius: 16px;
+    max-width: 72%;
+    min-width: 120px;
+    word-wrap: break-word;
+    position: relative;
+    line-height: 1.4;
+    transition: transform 0.15s ease;
+    font-size: 0.95rem;
+}
+/* 接收消息 - 更深蓝色系 */
+#messages .received {
+    background: #d0e3ff; /* 更深的蓝色背景 */
+    color: #1a2a3b;      /* 更深的文字颜色 */
+    align-self: flex-start;
+    border-radius: 16px 16px 16px 4px;
+}
+
+
+/* 发送消息 - 改浅黄色为现代青色 */
+#messages .sent {
+    background: #e8fad7;
+    color: #2a482f;
+    align-self: flex-end;
+    border-radius: 16px 16px 4px 16px;
+}
+
+/* 时间戳优化 */
+#messages .timestamp {
+    display: inline-block;
+    font-size: 0.75rem;
+    color: #6c757d;
+    margin-left: 8px;
+    vertical-align: bottom;
+}
+
+/* 动态圆角优化 */
+#messages p:not(:has(+ p)) {
+    border-bottom-right-radius: 16px !important;
+}
+
+/* 状态指示器 */
+#messages .sent::after {
+    content: "·";
+    color: #6c757d;
+    margin-left: 8px;
+    position: relative;
+    top: -1px;
+}
+
+#messages .sent.delivered::after {
+    content: "✓";
+    color: #4caf50;
+}
+
+/* 交互优化 */
+#messages p:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}

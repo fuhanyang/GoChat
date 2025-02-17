@@ -1,0 +1,72 @@
+# yaml 配置
+services:
+  some-rabbit:
+    image: rabbitmq:latest
+    ports:
+      - "15672:5672"
+    environment:
+      RABBITMQ_DEFAULT_USER: root
+      RABBITMQ_DEFAULT_PASS: root
+  redis:
+    image: "redis"
+    ports:
+      - "26379:6379"
+  etcd:
+    image: bitnami/etcd:latest
+    ports:
+      - "22379:2379"
+    restart: always
+    environment:
+      ALLOW_NONE_AUTHENTICATION: yes
+  mysql8019:
+    image: mysql:8.0.19
+    ports:
+      - "23306:3306"
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: my_app
+      MYSQL_USER: root
+  user-service:
+    image: user-service:latest
+    ports:
+      - "18972:8972"
+    command: sh -c "./wait-for-it.sh mysql8019:3306 -- ./wait-for-it.sh redis:6379 -- ./wait-for-it.sh etcd:2379 -- ./user-service "
+    depends_on:
+      - mysql8019
+      - redis
+      - etcd
+  message-service:
+    image: message-service:latest
+    ports:
+      - "18973:8973"
+    command: sh -c "./wait-for-it.sh mysql8019:3306 -- ./wait-for-it.sh redis:6379 -- ./wait-for-it.sh etcd:2379 -- ./message-service "
+    depends_on:
+      - mysql8019
+      - redis
+      - etcd
+  friend-service:
+    image: friend-service:latest
+    ports:
+      - "18974:8974"
+    command: sh -c "./wait-for-it.sh mysql8019:3306 -- ./wait-for-it.sh redis:6379 -- ./wait-for-it.sh etcd:2379 -- ./friend-service "
+    depends_on:
+      - mysql8019
+      - redis
+      - etcd
+  mq-server:
+    image: mq-server:latest
+    ports:
+      - "18971:8971"
+    command: sh -c "./wait-for-it.sh some-rabbit:5672 -- ./wait-for-it.sh etcd:2379  -- ./mq-server "
+    depends_on:
+      - some-rabbit
+      - etcd
+  my_server:
+    image: my_server
+    ports:
+      - "8080:8080"
+    command: sh -c "./wait-for-it.sh some-rabbit:5672 -- ./my_server"
+    depends_on:
+      - some-rabbit
+

@@ -1,0 +1,39 @@
+app:
+  name: "chatProgram"
+  mode: "dev"
+  port: 9090
+  version: "1.0.0"
+  log:
+    level: "debug"
+    file_name: "app.log"
+    max_size: 100
+    max_backups: 10
+    max_age: 30
+  mysql:
+    host: "mysql8019"
+    port: 3306
+    user_name: "root"
+    password: "root"
+    db_name: "my_app"
+    max_open_conns: 10
+    max_idle_conns: 5
+  redis:
+    host: "redis"
+    port: 6379
+    password: ""
+    db: 0
+    network: "tcp"
+    max_idle: 300
+    max_active: 500
+  grpc:
+    host: "message-service"
+    port: 8973
+    network: "tcp"
+  etcd:
+    host: "etcd"
+    port: 2379
+  service:
+    host: "message-service"
+    port: 8973
+    name: "Message"
+    protocol: "app"

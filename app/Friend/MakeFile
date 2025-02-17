@@ -1,0 +1,9 @@
+.PHONY: Run
+Run:
+    docker run --link=mysql8019:mysql8019   -p 8974:8974 friend-service /friend-service
+.PHONY: Build
+Build:
+	docker build -f app/Friend/Dockerfile -t friend-service .
+docker run --name mysql8019 -p 13306:3306 -e MYSQL_ROOT_PASSWORD=root -d mysql:8.0.19
+docker run --name redis -p 16379:6379   -d redis
+docker run -p 12379:2379 --restart=always --name etcd -e ALLOW_NONE_AUTHENTICATION=yes -d bitnami/etcd

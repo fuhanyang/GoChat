@@ -1,0 +1,43 @@
+syntax = "proto3"; // 版本声明，使用Protocol Buffers v3版本
+
+option go_package = "/rpc/Friend";  // 指定生成的Go代码在你项目中的导入路径
+package pb;
+
+
+service FriendService {
+    rpc GetFriends(GetFriendsRequest) returns (GetFriendsResponse) {}
+    rpc AddFriend(AddFriendRequest) returns (AddFriendResponse) {}
+    rpc DeleteFriend(DeleteFriendRequest) returns (DeleteFriendResponse) {}
+}
+message Friend {
+    string accountNum = 1;
+    string name = 2;
+}
+message GetFriendsRequest {
+    string accountNum = 2;
+    string handlerName = 3;
+}
+message GetFriendsResponse {
+  repeated Friend friends = 1;
+  string handlerName = 2;
+  string accountNum = 3;
+  string msg = 4;
+  int32 code = 5;
+}
+message AddFriendRequest {
+    string accountNum = 1;
+    string handlerName = 2;
+}
+message AddFriendResponse {
+    string accountNum = 1;
+    string handlerName = 2;
+    string msg = 3;
+    int32 code = 4;
+    Friend friend = 5;
+}
+message DeleteFriendRequest {
+
+}
+message DeleteFriendResponse {
+
+}
