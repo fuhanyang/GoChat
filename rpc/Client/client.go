@@ -3,7 +3,7 @@ package Client
 import (
 	"context"
 	"google.golang.org/grpc"
-	"rpc/handler"
+	"rpc/Service/method"
 )
 
 type ClientFactory func(conn *grpc.ClientConn) Client
@@ -15,7 +15,7 @@ func Inject(serviceName string, factory ClientFactory) {
 }
 
 type Client interface {
-	Handle(ctx context.Context, Handler handler.HandlerRequest) ([]byte, error)
+	Handle(ctx context.Context, Handler method.MethodRequest) ([]byte, error)
 	InjectClientFactory()
 }
 

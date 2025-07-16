@@ -6,21 +6,24 @@ ENV GO111MODULE=on \
     GOOS=linux \
     GOARCH=amd64
 
-WORKDIR /app/Message
+WORKDIR /app/message
 
 COPY . .
 
 
 RUN go mod download
 
-RUN go build -o message-service app/Message/main.go
+RUN go build -o message-service app/message/main.go
 
 FROM ubuntu:latest
+# 定义构建参数，默认使用本地配置
+ARG ENV=local
 
-COPY app/Message/Settings/config.yaml ./Settings/config.yaml
-COPY app/Message/wait-for-it.sh ./wait-for-it.sh
+# 根据参数复制对应环境的配置（覆盖目标文件）
+COPY app/message/settings/${ENV}/config.yaml ./settings/config.yaml
+COPY app/message/wait-for-it.sh ./wait-for-it.sh
 
-COPY --from=builder /app/Message/message-service /
+COPY --from=builder /app/message/message-service /
 
 RUN set -eux; \
 	apt-get update; \
@@ -31,4 +34,4 @@ RUN set -eux; \
 
 #EXPOSE 8973
 #
-#CMD ["./message-service","app/Message/Settings/config.yaml"]
+#CMD ["./message-service","app/message/viper/config.yaml"]

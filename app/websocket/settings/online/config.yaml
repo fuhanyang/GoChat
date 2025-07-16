@@ -1,0 +1,44 @@
+app:
+  name: "websocket-service"
+  mode: "online"
+  host: "websocket-service"
+  port: 9090
+  log:
+    level: "debug"
+    file_name: "app.log"
+    max_size: 100
+    max_backups: 10
+    max_age: 30
+  mysql:
+    host: "mysql8019"
+    port: 3306
+    user_name: "root"
+    password: "root"
+    db_name: "my_app"
+    max_open_conns: 10
+    max_idle_conns: 5
+  redis:
+    host: "redis"
+    port: 6379
+    password: ""
+    db: 0
+    network: "tcp"
+    max_idle: 300
+    max_active: 500
+  grpc:
+    host: "websocket-service"
+    port: 8975
+    network: "tcp"
+  etcd:
+    host: "etcd"
+    port: 2379
+  service:
+    host: "websocket-service"
+    port: 8975
+    name: "websocket"
+    protocol: "app"
+  rabbitmq:
+    host: "some-rabbit"
+    port: 5672
+    username: "root"
+    password: "root"

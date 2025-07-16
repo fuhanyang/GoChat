@@ -1,16 +1,20 @@
 package Models
 
 import (
-	"User/DAO/Mysql"
-	"User/DAO/Redis/redisLock"
-	"User/Machine_code"
+	"common/bloomFilter"
+	"common/redis"
 	"context"
-	go_redislock "github.com/jefferyjob/go-redislock"
+	"errors"
+	"fmt"
+	"github.com/jefferyjob/go-redislock"
+	"github.com/jinzhu/gorm"
 	"log"
 	"math/rand"
 	"strconv"
 	"sync"
 	"time"
+	"user/Const"
+	"user/DAO/Redis"
 )
 
 // userPool 用于缓存用户对象,不同的user类型都有对应的缓存池
@@ -25,7 +29,6 @@ var userPool = sync.Pool{
 // User 用户超类
 type User struct {
 	IP             string     `redis:"ip"`
-	IsOnline       bool       `redis:"is_online"`
 	Type           string     `redis:"type"`
 	Name           string     `redis:"name"`
 	AccountNum     string     `redis:"account_num"`
@@ -39,12 +42,14 @@ type User struct {
 }
 
 // MatchAUser 匹配一个用户
-func MatchAUser() *User {
+func MatchAUser(db *gorm.DB, u *User) error {
+	if u == nil {
+		return errors.New("user is nil")
+	}
 	// 首先获取记录总数
 	var total int64
-	if err := Mysql.MysqlDb.Model(&User{}).Count(&total).Error; err != nil {
-		log.Printf("Failed to count users: %v", err)
-		return nil
+	if err := db.Model(u).Count(&total).Error; err != nil {
+		return errors.New(fmt.Sprintf("Failed to count users: %v", err))
 	}
 
 	// 如果表中没有记录，直接返回 nil
@@ -57,20 +62,18 @@ func MatchAUser() *User {
 	randomOffset := rand.Int63n(total)
 
 	// 使用随机偏移量查询一条记录
-	var user User
-	if err := Mysql.MysqlDb.Offset(int(randomOffset)).Limit(1).Take(&user).Error; err != nil {
-		log.Printf("Failed to query user: %v", err)
-		return nil
+	if err := db.Offset(int(randomOffset)).Limit(1).Take(u).Error; err != nil {
+		return errors.New(fmt.Sprintf("Failed to query user: %v", err))
 	}
 
-	return &user
+	return nil
 }
-func GetUserByAccountNum(user *User, accountNum string) {
+func GetUserByAccountNum(db *gorm.DB, user *User, accountNum string) {
 	//从mysql中查找用户信息
-	Mysql.MysqlDb.First(user, "account_num = ?", accountNum)
+	db.First(user, "account_num = ?", accountNum)
 }
-func WriteUser(user *User) {
-	Mysql.MysqlDb.Create(user)
+func WriteUser(db *gorm.DB, user *User) {
+	db.Create(user)
 }
 func NewUser() *User {
 	var user = userPool.Get().(*User)
@@ -84,7 +87,7 @@ func (u *User) NewLock() {
 	ctx := context.Background()
 	ctx1, cancel := context.WithCancel(ctx)
 	u.lockCancelFunc = cancel
-	u.redisLock = redisLock.NewRedisLock(strconv.Itoa(Machine_code.Machine_code)+"_"+u.GetAccountNum(), ctx1)
+	u.redisLock = redis.NewRedisLock(strconv.Itoa(Const.Machine_code)+"_"+u.GetAccountNum(), ctx1, Redis.Client)
 }
 
 // Repair 补全用户信息
@@ -99,19 +102,22 @@ func (u *User) Repair() {
 		panic("account num is empty")
 	}
 	if u.GetType() == "" {
-		u.SetType("User")
+		u.SetType("user")
 	}
 	if u.GetIP() == "" {
 		u.SetIP("not_set")
 	}
 	u.NewLock()
 }
-func (u *User) Release() {
+func ReleaseUser(u *User) {
 	if u == nil {
 		return
 	}
-	// 释放锁
-	u.lockCancelFunc()
+	if u.lockCancelFunc != nil {
+		// 释放锁
+		u.lockCancelFunc()
+	}
+
 	userPool.Put(u)
 }
 
@@ -122,7 +128,7 @@ func (u *User) RedisLock() error {
 
 // RedisBlockLock 阻塞锁
 func (u *User) RedisBlockLock() error {
-	return u.redisLock.SpinLock(10 * time.Second)
+	return u.redisLock.SpinLock(5 * time.Second)
 }
 func (u *User) RedisUnlock() error {
 	return u.redisLock.UnLock()
@@ -130,9 +136,6 @@ func (u *User) RedisUnlock() error {
 
 func (u *User) GetIP() string {
 	return u.IP
-}
-func (u *User) GetIsOnline() bool {
-	return u.IsOnline
 }
 func (u *User) GetName() string {
 	return u.Name
@@ -155,9 +158,6 @@ func (u *User) SetIP(ip string) {
 func (u *User) SetAccountNum(accStr string) {
 	u.AccountNum = accStr
 }
-func (u *User) SetIsOnline(isOnline bool) {
-	u.IsOnline = isOnline
-}
 func (u *User) SetName(name string) {
 	u.Name = name
 }
@@ -169,4 +169,23 @@ func (u *User) SetID(id uint) {
 }
 func (u *User) SetType(t string) {
 	u.Type = t
+}
+
+func InitBloomFilter(bloomFilter bloomFilter.BloomFilter, db *gorm.DB) {
+	rows, err := db.Model(&User{}).Rows()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	// 逐行读取
+	for rows.Next() {
+		var user User
+		err = db.ScanRows(rows, &user)
+		if err != nil {
+			log.Fatal(err)
+		}
+		//fmt.Printf("ID: %d, Name: %s\n", user.ID, user.Name)
+		bloomFilter.Set(user.Name)
+	}
 }

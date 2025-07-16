@@ -1,3 +1,4 @@
+
 # user-service/Dockerfile
 FROM golang:latest AS builder
 ENV GO111MODULE=on \
@@ -6,21 +7,24 @@ ENV GO111MODULE=on \
     GOOS=linux \
     GOARCH=amd64
 
-WORKDIR /app/User
+WORKDIR /app/user
 
 COPY . .
 
 
 RUN go mod download
 
-RUN go build -o user-service app/User/main.go
+RUN go build -o user-service app/user/main.go
 
 FROM ubuntu:latest
+# 定义构建参数，默认使用本地配置
+ARG ENV=local
 
-COPY app/User/Settings/config.yaml ./Settings/config.yaml
-COPY app/User/wait-for-it.sh ./wait-for-it.sh
+# 根据参数复制对应环境的配置（覆盖目标文件）
+COPY app/user/settings/${ENV}/config.yaml ./settings/config.yaml
+COPY app/user/wait-for-it.sh ./wait-for-it.sh
 
-COPY --from=builder /app/User/user-service /
+COPY --from=builder /app/user/user-service /
 
 RUN set -eux; \
 	apt-get update; \
@@ -31,4 +35,4 @@ RUN set -eux; \
 
 #EXPOSE 8972
 #
-#CMD ["./user-service","app/User/Settings/config.yaml"]
+#CMD ["./user-service","app/user/viper/config.yaml"]

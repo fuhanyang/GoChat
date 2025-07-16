@@ -1,0 +1,39 @@
+.message-area {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* 允许消息区域缩小 */
+    max-height: calc(100vh - 300px); /* 调整最大高度，为更大的输入框留出空间 */
+}
+#messages {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+#messages p {
+    margin: 0;
+    padding: 10px 18px;
+    border-radius: 18px;
+    max-width: 60%;
+    word-break: break-all;
+}
+#messages p.sent {
+    background: #bbdefb;
+    align-self: flex-end;
+    text-align: right;
+}
+#messages p.received {
+    background: #fff;
+    align-self: flex-start;
+    text-align: left;
+}
+#messages p.error {
+    background: #ffcdd2;
+    color: #b71c1c;
+}
+#messages p.loading {
+    color: #888;
+    font-style: italic;
+}

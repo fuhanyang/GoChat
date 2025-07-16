@@ -1,0 +1,197 @@
+/* 友好提示弹窗样式 */
+.notification-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(3px);
+    z-index: 9999;
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.notification-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: white;
+    border-radius: 12px;
+    padding: 0;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    display: none;
+    animation: modalSlideIn 0.3s ease-out forwards;
+    max-width: 350px;
+    width: 90%;
+    overflow: hidden;
+    cursor: default;
+}
+
+.notification-modal:hover {
+    transform: translate(-50%, -50%) scale(1.01);
+    transition: transform 0.2s ease;
+}
+
+.notification-modal:not(:hover) {
+    transform: translate(-50%, -50%) scale(1);
+    transition: transform 0.2s ease;
+}
+
+.notification-modal-header {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    color: white;
+    padding: 20px 20px 16px;
+    text-align: center;
+    position: relative;
+}
+
+.notification-modal-icon {
+    font-size: 36px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.notification-modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    margin-bottom: 4px;
+}
+
+.notification-modal-subtitle {
+    font-size: 13px;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.notification-modal-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.notification-modal-message {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #333;
+    margin-bottom: 16px;
+    white-space: pre-line;
+}
+
+.notification-modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.notification-modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 80px;
+}
+
+.notification-modal-btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.notification-modal-btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
+}
+
+.notification-modal-btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 8px rgba(102, 126, 234, 0.2);
+}
+
+.notification-modal-btn-secondary {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+.notification-modal-btn-secondary:hover {
+    background: #e9ecef;
+    transform: translateY(-1px);
+}
+
+.notification-modal-btn-secondary:active {
+    transform: translateY(0);
+}
+
+/* 不同类型的弹窗样式 */
+.notification-modal.warning .notification-modal-header {
+    background: linear-gradient(135deg, #ffa726, #ff7043);
+}
+
+.notification-modal.info .notification-modal-header {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.notification-modal.success .notification-modal-header {
+    background: linear-gradient(135deg, #66bb6a, #4caf50);
+}
+
+.notification-modal.error .notification-modal-header {
+    background: linear-gradient(135deg, #ef5350, #e53935);
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translate(-50%, -50%) scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    10%, 30%, 50%, 70%, 90% { transform: translate(-50%, -50%) scale(1.01) rotate(0.3deg); }
+    20%, 40%, 60%, 80% { transform: translate(-50%, -50%) scale(1.01) rotate(-0.3deg); }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+    .notification-modal {
+        width: 95%;
+        margin: 15px;
+    }
+    
+    .notification-modal-header {
+        padding: 16px 16px 12px;
+    }
+    
+    .notification-modal-body {
+        padding: 16px;
+    }
+    
+    .notification-modal-actions {
+        flex-direction: column;
+    }
+    
+    .notification-modal-btn {
+        width: 100%;
+    }
+} 

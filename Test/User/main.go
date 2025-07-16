@@ -5,12 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/streadway/amqp"
-	"rpc/User"
+	"rpc/user"
 	"time"
 )
 
 var servicesName = []string{
-	"User",
+	"user",
 }
 
 func getServerAddr(svcName string) string {
@@ -30,7 +30,7 @@ func main() {
 	//	}()
 	//}
 	//time.Sleep(1 * time.Second)
-	//addr := getServerAddr("User")
+	//addr := getServerAddr("user")
 	//if addr == "" {
 	//	fmt.Println(" service not found")
 	//	return
@@ -108,13 +108,13 @@ func main() {
 				if HandlerName == "Register" {
 					for d := range ServiceHandlerMsgMap[ServiceName][HandlerName] {
 						fmt.Println("get response :", string(d.Body))
-						var rgs User.RegisterResponse
+						var rgs user.RegisterResponse
 						err := json.Unmarshal(d.Body, &rgs)
 						if err != nil {
 							fmt.Println("unmarshal err:", err)
 							continue
 						}
-						v1, err := json.Marshal(User.LoginRequest{
+						v1, err := json.Marshal(user.LoginRequest{
 							AccountNum:  rgs.AccountNum,
 							Password:    "123456",
 							Ip:          "127.0.0.1",
@@ -146,7 +146,7 @@ func main() {
 	}
 	for {
 		time.Sleep(1 * time.Second)
-		v, err := json.Marshal(User.RegisterRequest{
+		v, err := json.Marshal(user.RegisterRequest{
 			Username:    "xyx",
 			Password:    "123456",
 			Ip:          "127.0.0.1",
@@ -179,10 +179,10 @@ func main() {
 var conn *amqp.Connection
 var ch *amqp.Channel
 var ServicesName = []string{
-	"User",
+	"user",
 }
 var HandlersName = map[string][]string{
-	"User": {"Register", "Login", "Logoff"},
+	"user": {"Register", "Login", "LogOff"},
 }
 var queueMap = make(map[string]amqp.Queue)
 var ServiceHandlerMsgMap = make(map[string]map[string]<-chan amqp.Delivery)

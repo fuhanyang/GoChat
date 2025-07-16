@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/streadway/amqp"
-	"rpc/handler"
+	"rpc/Service/method"
 )
 
 // ParseDelivery 解析消息
-func ParseDelivery(v handler.HandlerRequest, delivery amqp.Delivery) (handler.HandlerRequest, error) {
+func ParseDelivery(v method.MethodRequest, delivery amqp.Delivery) (method.MethodRequest, error) {
 	if v == nil {
-		return nil, fmt.Errorf("nil handler")
+		return nil, fmt.Errorf("nil method")
 	}
 	body := delivery.Body
 	if len(body) == 0 {

@@ -1,7 +1,10 @@
 package Logic
 
-import "Friend/Models"
+import (
+	"friend/Models"
+	"github.com/jinzhu/gorm"
+)
 
-func AddFriend(userAccountNum string, friendAccountNum string, userName string, friendName string) error {
-	return Models.CreateFriend(userAccountNum, friendAccountNum, userName, friendName)
+func AddFriend(db *gorm.DB, userAccountNum string, friendAccountNum string, userName string, friendName string) error {
+	return Models.CreateFriend(db, userAccountNum, friendAccountNum, userName, friendName)
 }

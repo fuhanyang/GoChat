@@ -1,8 +1,8 @@
 package TempUserCreate
 
 import (
-	"User/Models"
 	"errors"
+	"user/Models"
 )
 
 func CreateTempUser(username string, ip string) error {

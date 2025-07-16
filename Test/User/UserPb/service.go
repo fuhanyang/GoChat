@@ -2,10 +2,10 @@ package UserPb
 
 import (
 	"google.golang.org/grpc"
-	"rpc/User"
+	"rpc/user"
 )
 
-func NewClient(conn *grpc.ClientConn) User.UserServiceClient {
-	c := User.NewUserServiceClient(conn)
+func NewClient(conn *grpc.ClientConn) user.UserServiceClient {
+	c := user.NewUserServiceClient(conn)
 	return c
 }

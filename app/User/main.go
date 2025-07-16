@@ -1,54 +1,100 @@
 package main
 
 import (
-	"User/DAO/Mysql"
-	"User/DAO/MysqlTable"
-	"User/DAO/Redis"
-	"User/Logic/Snowflake"
-	"User/Settings"
-	"User/rpc/Service"
+	"common/mysql"
+	"common/redis"
+	"common/snowflake"
+	"common/viper"
+	"common/zap"
 	"context"
 	"fmt"
 	"net"
-	"rpc/handler/Init"
+	"os"
+	"rpc/Service/Init"
 	"strconv"
+	"user/DAO/Mysql"
+	"user/DAO/Redis"
+	"user/Logic/authentication"
+	"user/rpc/client"
+	"user/rpc/service"
+	"user/settings"
+)
+
+var (
+	lis       net.Listener
+	err       error
+	bitmapLen int64 = 1008547758
+	hashCount int32 = 5
+	defers          = make([]func(), 0)
 )
 
 func main() {
-	Init.InitService()
-	err := Settings.Init()
-	if err != nil {
-		panic(err)
-	}
-	Service.InitServer(Settings.Config.ServiceConfig)
-	Redis.Init(Settings.Config.RedisConfig)
-	err = Snowflake.Init(Settings.Config.SnowflakeConfig)
-	if err != nil {
-		panic(err)
-	}
-	err = Mysql.Init(Settings.Config.MysqlConfig)
-	MysqlTable.InitTable()
-	if err != nil {
-		panic(err)
-	}
 	defer func() {
-		err = Mysql.MysqlClose()
+		for _, f := range defers {
+			f()
+		}
+	}()
+	userInit()
+	newBloomFilter(bitmapLen, hashCount)
+	listen()
+	findService()
+	serve()
+}
+func newBloomFilter(bitmapLen int64, hashCount int32) {
+	authentication.NewBloomFilter(bitmapLen, hashCount, Mysql.Db)
+}
+func userInit() {
+	err = viper.Init(settings.Config)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("config init success mode:", settings.Config.Mode)
+	Redis.Pool = redis.Init(settings.Config.RedisConfig)
+	Redis.Client = redis.InitRedisLock(settings.Config.RedisConfig)
+	err = snowflake.Init(settings.Config.SnowflakeConfig)
+	if err != nil {
+		panic(err)
+	}
+	Mysql.Db, err = mysql.Init(settings.Config.MysqlConfig)
+	if err != nil {
+		panic(err)
+	}
+	defers = append(defers, func() {
+		err = mysql.MysqlClose(Mysql.Db)
 		if err != nil {
 			panic(err)
 		}
-	}()
+	})
+	Mysql.InitTable(Mysql.Db)
 
-	lis, err := net.Listen(Settings.Config.GrpcConfig.NetWork,
-		Settings.Config.GrpcConfig.Host+
-			":"+
-			strconv.Itoa(Settings.Config.GrpcConfig.Port))
+	Init.InitService()
+	service.InitServer(settings.Config.ServiceConfig)
+
+	// 初始化zap日志
+	path, err := os.Getwd()
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("User service start success at", lis.Addr().String())
-	ctx := context.Background()
+	zap.InitLogger(path)
+}
+func findService() {
+	// 其他服务发现
+	client.Init(settings.Config.EtcdConfig.Host, settings.Config.EtcdConfig.Port)
+}
+func listen() {
+	lis, err = net.Listen(settings.Config.GrpcConfig.NetWork,
+		settings.Config.GrpcConfig.Host+
+			":"+
+			strconv.Itoa(settings.Config.GrpcConfig.Port))
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("user service start success at", lis.Addr().String())
+}
+func serve() {
 	// 注册服务
-	server := Service.NewServer(ctx, Settings.Config.EtcdConfig.Host, Settings.Config.EtcdConfig.Port)
+	ctx := context.Background()
+	server := service.NewServer(ctx, settings.Config.EtcdConfig.Host, settings.Config.EtcdConfig.Port)
 
 	err = server.Serve(lis)
 	if err != nil {

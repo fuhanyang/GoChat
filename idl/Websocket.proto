@@ -1,0 +1,31 @@
+syntax = "proto3"; // 版本声明，使用Protocol Buffers v3版本
+
+option go_package = "/rpc/websocket";  // 指定生成的Go代码在你项目中的导入路径
+package pb;
+
+service WebsocketService {
+  rpc TryConnect(TryConnectRequest) returns ( TryConnectResponse) {}
+  rpc KickUser(KickUserRequest) returns (KickUserResponse) {}
+}
+
+message TryConnectRequest {
+  string AccountNum = 1;
+  string Password = 2;
+  string HandlerName = 3;
+}
+message TryConnectResponse {
+  string Url = 1;
+  string Token = 2;
+  string  HandlerName = 3;
+}
+
+message KickUserRequest {
+  string AccountNum = 1;
+  string Reason = 2;
+  string HandlerName = 3;
+}
+message KickUserResponse {
+  string msg = 1;
+  int32 code = 2;
+  string HandlerName = 3;
+}

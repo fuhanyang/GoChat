@@ -1,0 +1,252 @@
+.user-profile {
+    padding: 24px 0 16px 0;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+.user-profile .avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #eee;
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.4,0,0.2,1), box-shadow 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+.user-profile .avatar:hover {
+    transform: scale(1.08) rotate(2deg);
+    box-shadow: 0 4px 16px rgba(33, 150, 243, 0.18), 0 1.5px 6px rgba(33, 150, 243, 0.10);
+}
+.user-meta {
+    margin-top: 10px;
+}
+.user-nickname { font-weight: bold; font-size: 18px; }
+.user-account, .user-status { display: block; color: #888; font-size: 14px; }
+.user-status.online { color: #4caf50; }
+
+/* 连接状态样式 */
+.connection-status {
+    display: block;
+    font-size: 12px;
+    margin-top: 4px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.connection-status.status-success {
+    background: rgba(76, 175, 80, 0.1);
+    color: #4caf50;
+    border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.connection-status.status-warning {
+    background: rgba(255, 152, 0, 0.1);
+    color: #ff9800;
+    border: 1px solid rgba(255, 152, 0, 0.2);
+}
+
+.connection-status.status-error {
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    border: 1px solid rgba(244, 67, 54, 0.2);
+}
+
+.connection-status.status-info {
+    background: rgba(33, 150, 243, 0.1);
+    color: #2196f3;
+    border: 1px solid rgba(33, 150, 243, 0.2);
+}
+.logout-btn {
+    margin-top: 12px;
+    padding: 6px 20px;
+    background: #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.friend-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #eee;
+    gap: 8px; /* 使用gap替代margin，更现代的布局方式 */
+    min-height: 44px; /* 确保最小高度 */
+    width: 100%; /* 确保占满宽度 */
+    box-sizing: border-box; /* 确保padding不会增加总宽度 */
+}
+#friendSearch {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    font-size: 14px; /* 确保字体大小一致 */
+    transition: border-color 0.2s ease; /* 添加过渡效果 */
+    text-overflow: ellipsis; /* 超出部分显示省略号 */
+    white-space: nowrap; /* 不换行 */
+    overflow: hidden; /* 隐藏超出部分 */
+    min-width: 0; /* 允许flex项目缩小 */
+    box-sizing: border-box; /* 确保padding不会增加总宽度 */
+}
+
+#friendSearch:focus {
+    outline: none; /* 移除默认焦点样式 */
+    border-color: #2196f3; /* 聚焦时边框变蓝 */
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1); /* 添加聚焦阴影 */
+}
+
+/* 确保placeholder在输入框有内容时也能正常显示 */
+#friendSearch::placeholder {
+    color: #999;
+    opacity: 1; /* Firefox需要这个 */
+}
+.add-friend-btn {
+    padding: 6px 12px;
+    background: #2196f3;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 120px; /* 增加宽度以显示"随机匹配好友" */
+    white-space: nowrap; /* 防止文字换行 */
+    flex-shrink: 0; /* 防止按钮被压缩 */
+    font-size: 14px; /* 确保字体大小一致 */
+    transition: background-color 0.2s ease; /* 添加过渡效果 */
+    box-sizing: border-box; /* 确保padding不会增加总宽度 */
+}
+
+.add-friend-btn:hover {
+    background: #1976d2; /* 悬停时颜色变深 */
+}
+
+.add-friend-btn:active {
+    background: #1565c0; /* 点击时颜色更深 */
+    transform: translateY(1px); /* 轻微下沉效果 */
+}
+.friend-section {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden; /* 防止整个section滚动 */
+}
+
+.friend-groups { 
+    flex: 1; 
+    overflow-y: auto; 
+    max-height: calc(100vh - 350px); /* 动态计算高度，与聊天栏对齐 */
+    min-height: 300px; /* 增加最小高度 */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: #ccc transparent; /* Firefox */
+}
+
+/* Webkit浏览器的滚动条样式 */
+.friend-groups::-webkit-scrollbar {
+    width: 6px;
+}
+
+.friend-groups::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.friend-groups::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.friend-groups::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+.friend-group .group-title {
+    padding: 8px 16px;
+    font-size: 15px;
+    color: #666;
+    background: #f7f7f7;
+}
+#friendList {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0; /* 添加一些内边距 */
+}
+#friendList li {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px; /* 增加内边距 */
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s;
+    min-height: 60px; /* 设置最小高度 */
+}
+#friendList li.active, #friendList li:hover {
+    background: #e3f2fd;
+}
+.friend-avatar {
+    width: 40px; /* 增加头像大小 */
+    height: 40px; /* 增加头像大小 */
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+    background: #eee;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 添加轻微阴影 */
+    cursor: pointer;
+    transition: transform 0.2s cubic-bezier(0.4,0,0.2,1), box-shadow 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+.friend-avatar:hover {
+    transform: scale(1.1) rotate(-2deg);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.18), 0 1.5px 6px rgba(76, 175, 80, 0.10);
+}
+.friend-info-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+.friend-nickname-list {
+    font-weight: 500;
+    font-size: 16px; /* 增加字体大小 */
+    margin-bottom: 2px; /* 添加间距 */
+}
+.friend-account-list {
+    font-size: 13px; /* 增加字体大小 */
+    color: #888;
+    margin-bottom: 2px; /* 添加间距 */
+}
+/* 聊天区域头像样式 */
+.chat-avatar {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #eee;
+    transition: transform 0.2s cubic-bezier(0.4,0,0.2,1), box-shadow 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+.chat-avatar:hover {
+    transform: scale(1.12) rotate(-3deg);
+    box-shadow: 0 4px 16px rgba(80, 210, 124, 0.18), 0 1.5px 6px rgba(74, 108, 247, 0.10);
+}
+
+
+/* 空状态样式 */
+.friend-list-empty {
+    text-align: center;
+    padding: 60px 20px; /* 增加内边距 */
+    color: #999;
+    font-size: 14px;
+}
+
+.friend-list-empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.friend-list-empty-text {
+    margin-bottom: 8px;
+}
+
+.friend-list-empty-hint {
+    font-size: 12px;
+    opacity: 0.7;
+}

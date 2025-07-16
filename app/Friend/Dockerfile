@@ -6,23 +6,26 @@ ENV GO111MODULE=on \
     GOOS=linux \
     GOARCH=amd64
 
-WORKDIR /app/Friend
+WORKDIR /app/friend
 
 COPY . .
 
 RUN go mod download
 
-RUN go build -o friend-service app/Friend/main.go
+RUN go build -o friend-service app/friend/main.go
 
 #EXPOSE 8974
 #
-#CMD ["./friend-service","app/Friend/Settings/config.yaml"]
+#CMD ["./friend-service","app/friend/viper/config.yaml"]
 FROM ubuntu:latest
+# 定义构建参数，默认使用本地配置
+ARG ENV=local
 
-COPY app/Friend/Settings/config.yaml /Settings/
-COPY app/Friend/wait-for-it.sh  /
+# 根据参数复制对应环境的配置（覆盖目标文件）
+COPY app/friend/settings/${ENV}/config.yaml ./settings/config.yaml
+COPY app/friend/wait-for-it.sh  /
 
-COPY --from=builder /app/Friend/friend-service /
+COPY --from=builder /app/friend/friend-service /
 
 RUN set -eux; \
 	apt-get update; \

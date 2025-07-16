@@ -1,13 +1,13 @@
 package UserCreate
 
 import (
-	"User/Logic/Snowflake"
-	"User/Models"
+	"common/snowflake"
 	"strconv"
+	"user/Models"
 )
 
 func CreateAccountNum() string {
-	accStr := strconv.FormatInt(Snowflake.GetID(), 10) //生成唯一的账号号
+	accStr := strconv.FormatInt(snowflake.GetID(), 10) //生成唯一的账号号
 	return accStr
 }
 
@@ -18,9 +18,8 @@ func CreateUser(username string, IP string, password string, accountNum string) 
 	user.SetAccountNum(accountNum)
 	user.SetPassword(password)
 	user.SetName(username)
-	user.SetIsOnline(false)
 	user.SetIP(IP)
-	user.SetType("User")
+	user.SetType("user")
 	//修补数据,生成锁
 	user.Repair()
 	return user, nil

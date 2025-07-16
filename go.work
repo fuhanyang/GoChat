@@ -4,9 +4,11 @@ use (
 	Test/ETCD
 	./Test/User
 	rabbitmq
-	./app/Message
-	./app/User
-	server
+	./app/message
+	./app/user
+	./api
 	./rpc
-	app/Friend
+	./app/friend
+	./app/websocket
+	./common
 )

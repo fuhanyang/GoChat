@@ -14,8 +14,11 @@ RUN go mod download
 RUN go build -o mq-server rabbitmq/main.go
 
 FROM ubuntu:latest
+# 定义构建参数，默认使用本地配置
+ARG ENV=local
 
-COPY rabbitmq/Settings/config.yaml ./Settings/config.yaml
+# 根据参数复制对应环境的配置（覆盖目标文件）
+COPY rabbitmq/settings/${ENV}/config.yaml ./settings/config.yaml
 COPY rabbitmq/wait-for-it.sh ./wait-for-it.sh
 
 COPY --from=builder /rabbitmq/mq-server /
@@ -32,4 +35,4 @@ RUN set -eux; \
 
 #EXPOSE 8971
 #
-#CMD ["./mq-server","rabbitmq/Settings/config.yaml"]
+#CMD ["./mq-server","rabbitmq/viper/config.yaml"]

@@ -1,38 +1,79 @@
 package main
 
 import (
+	"common/chain"
+	"common/viper"
+	"common/zap"
 	"context"
 	"fmt"
 	"github.com/streadway/amqp"
-	"rabbitmq/Mq"
+	clientv3 "go.etcd.io/etcd/client/v3"
+	"go.etcd.io/etcd/client/v3/naming/resolver"
+	resolver2 "google.golang.org/grpc/resolver"
+	"os"
 	"rabbitmq/ParseMessage"
-	"rabbitmq/Settings"
+	"rabbitmq/queue"
+	"rabbitmq/settings"
 	"rpc/Client"
 	"rpc/Service"
-	"rpc/handler"
-	"rpc/handler/Init"
+	"rpc/Service/Init"
+	"rpc/Service/inject"
+	"rpc/Service/method"
 	"time"
 )
 
 var ClientMap = make(map[string]Client.Client)
 var queueMap = make(map[string]amqp.Queue)
 var ServiceHandlerMsgMap = make(map[string]map[string]<-chan amqp.Delivery)
+var etcdResolverBuilder resolver2.Builder
+var etcdClient *clientv3.Client
+
+func main() {
+	var err error
+	err = viper.Init(settings.Config)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("config init success mode:", settings.Config.Mode)
+
+	// 初始化zap日志
+	path, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	zap.InitLogger(path)
+
+	Init.InitService()
+	// 连接消息队列
+	err = queue.NewConnCh(settings.Config.RabbitMQConfig)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("connect rabbitmq success at", settings.Config.RabbitMQConfig.Host, settings.Config.RabbitMQConfig.Port)
+	defer queue.ConnClose()
+	// 启动服务发现
+	fmt.Println("start service discovery at", settings.Config.EtcdConfig.Host, settings.Config.EtcdConfig.Port)
+	StartService(settings.Config.EtcdConfig.Host, settings.Config.EtcdConfig.Port)
+	// 监听消息队列
+	ListenQueues()
+	select {}
+}
 
 // StartService 启动服务发现
 func StartService(host string, port string) {
 	var c Client.Client
 	var err error
 	// 服务发现
-	for _, ServiceName := range Service.ServicesName {
-		go func() {
-			err := Service.WatchServiceName(ServiceName, host, port)
-			if err != nil {
-				fmt.Println(err)
-			}
-		}()
-		time.Sleep(1 * time.Second)
+	for _, ServiceName := range inject.ServicesName {
 		for {
-			c, err = Service.ConnService(ServiceName)
+			addr := fmt.Sprintf("http://%s:%s", host, port)
+			etcdClient, err = clientv3.NewFromURL(addr)
+			fmt.Println("connect etcd success at ", addr)
+			if err != nil {
+				panic(err)
+			}
+			etcdResolverBuilder, err = resolver.NewBuilder(etcdClient)
+			c, err = Service.ConnService(ServiceName, etcdResolverBuilder)
 			if err == nil {
 				break
 			}
@@ -43,15 +84,15 @@ func StartService(host string, port string) {
 		ClientMap[ServiceName] = c
 		// 绑定消息队列
 		ServiceHandlerMsgMap[ServiceName] = make(map[string]<-chan amqp.Delivery)
-		for _, HandlerName := range handler.ServiceMethods[ServiceName] {
-			queue, err := Mq.QueueDeclare(HandlerName, false, false, false, false, nil)
+		for _, HandlerName := range method.ServiceMethods[ServiceName] {
+			q, err := queue.QueueDeclare(HandlerName, false, false, false, false, nil)
 			if err != nil {
 				panic(err)
 			}
-			queueMap[HandlerName] = queue
-			fmt.Println("bind queue ", queue.Name)
-			msg, err := Mq.GetMessages(
-				queue.Name, "",
+			queueMap[HandlerName] = q
+			fmt.Println("bind queue ", q.Name)
+			msg, err := queue.GetMessages(
+				q.Name, "",
 				false, false, false, false,
 				nil,
 			)
@@ -73,7 +114,7 @@ func ListenQueues() {
 				// 处理消息
 				ctx := context.Background()
 				for delivery := range msg {
-					_handler, err := ParseMessage.ParseDelivery(handler.GetHandlersType(ServiceName, HandlerName), delivery)
+					_handler, err := ParseMessage.ParseDelivery(method.GetHandlersType(ServiceName, HandlerName), delivery)
 					if err != nil {
 						fmt.Println(err)
 						continue
@@ -83,14 +124,14 @@ func ListenQueues() {
 					// 调用rpc服务并返回结果
 					res, err := c.Handle(ctx, _handler)
 					if err != nil {
-						fmt.Println(err)
+						chain.ZapLogger("error", "rpc handle error: %s", err.Error())
 					}
 					if res == nil {
 						fmt.Println("res is nil")
 						continue
 					}
 					// 发送响应给server
-					err = Mq.GivesResponseTo(delivery.ReplyTo, delivery.CorrelationId, res)
+					err = queue.GivesResponseTo(delivery.ReplyTo, delivery.CorrelationId, res)
 					if err != nil {
 						panic(err)
 					}
@@ -98,25 +139,4 @@ func ListenQueues() {
 			}()
 		}
 	}
-}
-func main() {
-	var err error
-	err = Settings.Init()
-	if err != nil {
-		panic(err)
-	}
-	Init.InitService()
-	// 连接消息队列
-	err = Mq.NewConnCh(Settings.Config.RabbitMQConfig)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("connect rabbitmq success at", Settings.Config.RabbitMQConfig.Host, Settings.Config.RabbitMQConfig.Port)
-	defer Mq.ConnClose()
-	// 启动服务发现
-	fmt.Println("start service discovery at", Settings.Config.EtcdConfig.Host, Settings.Config.EtcdConfig.Port)
-	StartService(Settings.Config.EtcdConfig.Host, Settings.Config.EtcdConfig.Port)
-	// 监听消息队列
-	ListenQueues()
-	select {}
 }

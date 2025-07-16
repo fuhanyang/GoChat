@@ -1,24 +1,25 @@
-package Service
+package service
 
 import (
-	"Message/Logic/GetMessage"
-	"Message/Logic/SendMessage"
-	"User/StatusCode"
-	"rpc/Message"
+	"message/DAO/Mysql"
+	"message/Logic/GetMessage"
+	"message/Logic/SendMessage"
+	"rpc/message"
+	"user/Const"
 
 	"context"
 	"fmt"
 	"time"
 )
 
-func (s *server) RefreshText(ctx context.Context, req *Message.RefreshRequest) (*Message.RefreshTextResponse, error) {
+func (s *server) RefreshText(ctx context.Context, req *message.RefreshRequest) (*message.RefreshTextResponse, error) {
 	var (
-		res Message.RefreshTextResponse
+		res message.RefreshTextResponse
 	)
 	res.SenderAccountNum = req.SenderAccountNum
 	res.ReceiverAccountNum = req.ReceiverAccountNum
 
-	contents := GetMessage.RefreshText(req.SenderAccountNum, req.ReceiverAccountNum)
+	contents := GetMessage.RefreshText(Mysql.MysqlDb, req.SenderAccountNum, req.ReceiverAccountNum)
 	for _, content := range contents {
 		res.Content = append(res.Content, content)
 	}
@@ -27,9 +28,9 @@ func (s *server) RefreshText(ctx context.Context, req *Message.RefreshRequest) (
 	res.HandlerName = "RefreshText"
 	return &res, nil
 }
-func (s *server) SendText(ctx context.Context, req *Message.SendTextRequest) (*Message.SendTextResponse, error) {
+func (s *server) SendText(ctx context.Context, req *message.SendTextRequest) (*message.SendTextResponse, error) {
 	var (
-		res Message.SendTextResponse
+		res message.SendTextResponse
 		err error
 	)
 	res.HandlerName = "SendText"
@@ -40,12 +41,12 @@ func (s *server) SendText(ctx context.Context, req *Message.SendTextRequest) (*M
 	if err != nil {
 		goto ERR
 	}
-	err = SendMessage.SendText(req.SenderAccountNum, req.ReceiverAccountNum, int64(len(content)), content, parsedTime)
+	err = SendMessage.SendText(Mysql.MysqlDb, req.SenderAccountNum, req.ReceiverAccountNum, int64(len(content)), content, parsedTime)
 	if err != nil {
 		goto ERR
 	}
 	res.Msg = "SendText Success"
-	res.Code = StatusCode.StatusOK
+	res.Code = Const.StatusOK
 	return &res, err
 ERR:
 	fmt.Println(err)

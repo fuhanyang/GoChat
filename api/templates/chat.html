@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>高级聊天室</title>
+    <link rel="stylesheet" href="/api/static/temp/css/chat.css">
+    <link rel="stylesheet" href="/api/static/temp/css/friend.css">
+    <link rel="stylesheet" href="/api/static/temp/css/message.css">
+    <link rel="stylesheet" href="/api/static/temp/css/textInput.css">
+    <link rel="stylesheet" href="/api/static/temp/css/kickModal.css">
+    <link rel="stylesheet" href="/api/static/temp/css/notificationModal.css">
+</head>
+
+<body>
+<!-- 优化的踢出用户弹窗 -->
+<div id="kickModalOverlay" class="kick-modal-overlay"></div>
+<div id="kickModal" class="kick-modal">
+    <div class="kick-modal-header">
+        <span class="kick-modal-icon">⚠️</span>
+        <h3 class="kick-modal-title">会话已终止</h3>
+        <p class="kick-modal-subtitle">您的账户已在其他设备登录</p>
+    </div>
+    <div class="kick-modal-body">
+        <p class="kick-modal-message" id="kickMessage">您已在其他设备登录，当前会话已终止。</p>
+        <div class="kick-modal-reason" id="kickReason">原因：新设备登录</div>
+        <div class="kick-modal-actions">
+            <button class="kick-modal-btn kick-modal-btn-primary" id="kickConfirmBtn">
+                重新登录
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 友好提示弹窗 -->
+<div id="notificationModalOverlay" class="notification-modal-overlay"></div>
+<div id="notificationModal" class="notification-modal">
+    <div class="notification-modal-header">
+        <span class="notification-modal-icon" id="notificationIcon">ℹ️</span>
+        <h3 class="notification-modal-title" id="notificationTitle">提示</h3>
+        <p class="notification-modal-subtitle" id="notificationSubtitle">系统消息</p>
+    </div>
+    <div class="notification-modal-body">
+        <p class="notification-modal-message" id="notificationMessage">这是一条提示消息</p>
+        <div class="notification-modal-actions">
+            <button class="notification-modal-btn notification-modal-btn-primary" id="notificationConfirmBtn">
+                确定
+            </button>
+        </div>
+    </div>
+</div>
+<div class="chat-app-container">
+    <!-- 左侧：用户与好友区 -->
+    <aside class="sidebar">
+        <section class="user-profile">
+            <img id="userAvatar" src="" alt="用户头像" class="avatar" onclick="goToUserDetailPage()">
+            <script>
+                // 定义获取头像的函数
+                function getUserAvatar() {
+                    if (localStorage.getItem('avatar_url') !== null) {
+                        return localStorage.getItem('avatar_url');
+                    } else {
+                        return localStorage.getItem('base_url') + '/api/static/images/user-icon.png'; // 默认头像
+                    }
+                }
+                // 页面加载完成后执行
+                window.onload = function() {
+                    // 找到 img 标签
+                    const avatarImg = document.getElementById('userAvatar');
+                    // 调用函数并设置 src
+                    avatarImg.src = getUserAvatar();
+                    console.log('img标签最终的src：', avatarImg.src); // 关键日志2（会显示浏览器解析后的完整URL）
+                };
+            </script>
+            <div class="user-meta">
+                <span class="user-nickname" id="userNickname">用户名</span>
+                <span class="user-account" id="userAccountNum"></span>
+                <span class="user-status online" id="userStatus">在线</span>
+            </div>
+            <button class="logout-btn" onclick="logoff()">登出</button>
+        </section>
+        <section class="friend-section">
+            <div class="friend-header">
+                <input type="text" id="friendSearch" placeholder="输入账号添加好友或留空随机匹配..." />
+                <button class="add-friend-btn" onclick="addFriend()">添加好友</button>
+                <script>// 搜索好友功能（简单前端过滤）和动态更新按钮文本
+                document.getElementById('friendSearch').addEventListener('input', function() {
+                    const keyword = this.value.trim();
+                    const addFriendBtn = document.querySelector('.add-friend-btn');
+
+                    // 动态更新按钮文本
+                    if (keyword) {
+                        addFriendBtn.textContent = `通过账号搜索`;
+                    } else {
+                        addFriendBtn.textContent = '随机匹配好友';
+                    }
+
+                    // 搜索好友列表
+                    const items = document.querySelectorAll('#friendList li');
+                    items.forEach(li => {
+                        if (li.textContent.includes(keyword)) {
+                            li.style.display = '';
+                        } else {
+                            li.style.display = 'none';
+                        }
+                    });
+                });</script>
+            </div>
+            <div class="friend-groups">
+                <div class="friend-group" id="defaultGroup">
+                    <div class="group-title">我的好友</div>
+                    <!-- 好友列表 -->
+                    <ul id="friendList"></ul>
+                </div>
+                <!-- 可扩展分组 -->
+            </div>
+        </section>
+    </aside>
+    <!-- 中间：聊天主区 -->
+    <main class="chat-main">
+        <header class="chat-header" id="chatHeader">
+            <!-- 选中好友时填充头像和信息，否则显示提示 -->
+        </header>
+        <section class="message-area">
+            <div id="messages"></div>
+        </section>
+        <footer class="chat-input-area">
+            <form id="textInputForm" class="chat-input-form">
+                <button type="button" class="emoji-btn" title="表情">😊</button>
+                <label for="textInput"></label><textarea id="textInput" placeholder="输入消息..." autocomplete="off" rows="1"></textarea>
+                <button type="button" class="file-btn" title="发送文件">📎</button>
+                <button type="submit" class="send-btn">发送</button>
+            </form>
+            <div class="char-counter" id="charCounter">0/1000</div>
+            <div id="error"></div>
+        </footer>
+    </main>
+    <!-- 右侧：信息区（可扩展） -->
+    <aside class="info-panel" id="infoPanel" style="display:none;">
+        <div id="infoContent">
+            <!-- 好友资料、聊天设置等内容动态填充 -->
+        </div>
+    </aside>
+</div>
+<script src="/api/static/js/jwt.js"></script>
+<script src="/api/static/js/login.js"></script>
+<script src="/api/static/js/friend.js"></script>
+<!-- <script src="/api/static/js/websocket-manager.js"></script> -->
+<script src="/api/static/js/chat.js"></script>
+<!--<script src="/api/static/js/userInfo.js"></script>-->
+
+</body>
+</html>

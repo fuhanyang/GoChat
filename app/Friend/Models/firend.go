@@ -1,7 +1,6 @@
 package Models
 
 import (
-	"Friend/DAO/Mysql"
 	"errors"
 	"fmt"
 	"github.com/jinzhu/gorm"
@@ -35,17 +34,17 @@ func AddCompositeUniqueIndex(db *gorm.DB, dbName string) error {
 	// 添加唯一约束
 	return db.Exec("ALTER TABLE friends ADD CONSTRAINT unique_friendship UNIQUE (user1, user2);").Error
 }
-func GetFriend(userAccountNum string, limit int) []Friend {
+func GetFriend(db *gorm.DB, userAccountNum string, limit int) []Friend {
 	Friends := make([]Friend, limit)
-	Mysql.MysqlDb.Where("user1 = ?", userAccountNum).
+	db.Where("user1 = ?", userAccountNum).
 		Or("user2 = ?", userAccountNum).
 		Order("created_at desc").
 		Limit(limit).
 		Find(&Friends)
 	return Friends
 }
-func CreateFriend(user1, user2, user1Name, user2Name string) error {
-	err := Mysql.MysqlDb.Create(&Friend{
+func CreateFriend(db *gorm.DB, user1, user2, user1Name, user2Name string) error {
+	err := db.Create(&Friend{
 		User1:     user1,
 		User2:     user2,
 		User1Name: user1Name,

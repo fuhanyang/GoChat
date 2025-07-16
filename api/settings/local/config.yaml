@@ -1,0 +1,14 @@
+app:
+  host: localhost
+  port: 8888
+  mode: test
+  name: Test App
+  version: 1.0.0
+  rabbitmq:
+    host: "localhost"
+    port: 8080
+    username: "user"
+    password: ""
+  etcd:
+    host: "localhost"
+    port: 2379

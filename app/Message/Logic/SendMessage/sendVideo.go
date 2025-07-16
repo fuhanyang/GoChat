@@ -1,20 +1,22 @@
 package SendMessage
 
 import (
-	"Message/DAO/Redis"
-	"Message/Models"
+	redis2 "common/redis"
 	"github.com/gomodule/redigo/redis"
+	"gorm.io/gorm"
+	"message/DAO/Redis"
+	"message/Models"
 	"time"
 )
 
-func SendVideo(sender string, receiver string, size int64, format string, content []byte, CreatedAt time.Time) error {
+func SendVideo(db *gorm.DB, sender string, receiver string, size int64, format string, content []byte, CreatedAt time.Time) error {
 	video := Models.NewVideo(size, format)
 	video.Content = content
 	video.SenderAccountNum = sender
 	video.ReceiverAccountNum = receiver
-	Models.WriteMessage(video)
+	Models.WriteMessage(db, video)
 	// TODO: Redis
 	args := redis.Args{sender + receiver + video.CreatedAt.String()}.AddFlat(video)
-	_, err := Redis.RedisDo(Redis.HMSET, args...)
+	_, err := Redis.RedisDo(redis2.HMSET, args...)
 	return err
 }

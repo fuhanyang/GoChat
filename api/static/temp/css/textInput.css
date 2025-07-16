@@ -1,0 +1,138 @@
+.chat-input-area {
+    padding: 16px 24px;
+    border-top: 1px solid #eee;
+    background: #fafafa;
+    transition: padding 0.3s ease; /* 添加过渡效果 */
+    flex-shrink: 0; /* 防止输入区域被压缩 */
+    min-height: 60px; /* 设置最小高度 */
+}
+.chat-input-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease; /* 添加过渡效果 */
+}
+.chat-input-form input[type="text"], .chat-input-form textarea {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    outline: none;
+    transition: all 0.3s ease; /* 添加过渡效果 */
+    min-height: 20px; /* 设置最小高度 */
+    max-height: 400px; /* 大幅增加最大高度，容纳更多文字 */
+    resize: none; /* 防止手动调整大小 */
+    overflow: hidden; /* 隐藏超出部分 */
+    white-space: nowrap; /* 不换行 */
+    text-overflow: ellipsis; /* 超出部分显示省略号 */
+    line-height: 1.4; /* 设置行高 */
+    word-wrap: break-word; /* 允许单词换行 */
+    font-family: inherit; /* 继承字体 */
+    font-size: 14px; /* 设置字体大小 */
+}
+
+/* textarea特有的样式 */
+.chat-input-form textarea {
+    resize: none; /* 禁用手动调整大小 */
+    overflow-y: auto; /* 垂直滚动 */
+    white-space: pre-wrap; /* 保留换行和空格 */
+    word-wrap: break-word; /* 允许单词换行 */
+}
+
+/* 聚焦时的拉伸效果 */
+.chat-input-form:focus-within {
+    transform: scale(1.02); /* 轻微放大整个表单 */
+}
+
+.chat-input-form:focus-within input[type="text"], .chat-input-form:focus-within textarea {
+    min-height: 60px; /* 聚焦时增加高度 */
+    max-height: 400px; /* 聚焦时允许更大高度 */
+    padding: 15px; /* 增加内边距 */
+    border-color: #2196f3; /* 聚焦时边框变蓝 */
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1); /* 添加聚焦阴影 */
+    font-size: 16px; /* 聚焦时字体稍大 */
+    white-space: normal; /* 聚焦时允许换行 */
+    text-overflow: clip; /* 聚焦时不显示省略号 */
+    overflow: auto; /* 聚焦时允许滚动 */
+    line-height: 1.4; /* 设置行高 */
+    word-wrap: break-word; /* 允许单词换行 */
+}
+
+/* 为特定的textInput添加更精确的效果 */
+#textInput:focus {
+    min-height: 60px !important; /* 强制应用高度 */
+    max-height: 400px !important; /* 强制应用最大高度 */
+    padding: 15px !important; /* 强制应用内边距 */
+    border-color: #2196f3 !important; /* 强制应用边框颜色 */
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1) !important; /* 强制应用阴影 */
+    font-size: 16px !important; /* 强制应用字体大小 */
+    white-space: pre-wrap !important; /* 聚焦时保留换行 */
+    text-overflow: clip !important; /* 聚焦时不显示省略号 */
+    overflow: auto !important; /* 聚焦时允许滚动 */
+    line-height: 1.4 !important; /* 设置行高 */
+    word-wrap: break-word !important; /* 允许单词换行 */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important; /* 平滑过渡 */
+    border: 2px solid #ff0000 !important; /* 临时红色调试边框 */
+    height: auto !important; /* 允许自动高度 */
+}
+
+/* 失焦时的收缩效果 */
+#textInput:not(:focus) {
+    white-space: nowrap !important; /* 失焦时不换行 */
+    text-overflow: ellipsis !important; /* 失焦时显示省略号 */
+    overflow: hidden !important; /* 失焦时隐藏超出部分 */
+    min-height: 20px !important; /* 失焦时恢复最小高度 */
+    max-height: 20px !important; /* 失焦时限制最大高度 */
+    padding: 10px !important; /* 失焦时恢复内边距 */
+    font-size: 14px !important; /* 失焦时恢复字体大小 */
+    line-height: 1.4 !important; /* 设置行高 */
+    height: 20px !important; /* 强制设置高度 */
+    transition: all 0.3s ease !important; /* 添加延迟过渡 */
+}
+
+/* 聚焦时调整聊天区域的内边距 */
+.chat-input-area:focus-within {
+    padding: 20px 24px; /* 增加上下内边距 */
+}
+
+/* 字符计数器样式 */
+.char-counter {
+    text-align: right;
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+    margin-right: 8px;
+    transition: color 0.3s ease;
+}
+
+.char-counter.warning {
+    color: #ff9800;
+}
+
+.char-counter.danger {
+    color: #f44336;
+}
+.emoji-btn, .file-btn, .send-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+.emoji-btn:hover, .file-btn:hover, .send-btn:hover {
+    background: #e3f2fd;
+}
+.send-btn {
+    background: #4caf50;
+    color: #fff;
+    border-radius: 20px;
+    padding: 8px 24px;
+    font-size: 16px;
+}
+#error {
+    color: #f44336;
+    text-align: center;
+    margin-top: 8px;
+}

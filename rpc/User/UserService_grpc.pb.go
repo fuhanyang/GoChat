@@ -4,7 +4,7 @@
 // - protoc             v3.20.1
 // source: idl/UserService.proto
 
-package User
+package user
 
 import (
 	context "context"
@@ -26,8 +26,10 @@ type UserServiceClient interface {
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	LogOff(ctx context.Context, in *LogOffRequest, opts ...grpc.CallOption) (*LogOffResponse, error)
+	ForcedOffline(ctx context.Context, in *ForcedOfflineRequest, opts ...grpc.CallOption) (*ForcedOfflineResponse, error)
 	FindUser(ctx context.Context, in *FindUserRequest, opts ...grpc.CallOption) (*FindUserResponse, error)
 	MatchAUser(ctx context.Context, in *MatchAUserRequest, opts ...grpc.CallOption) (*MatchAUserResponse, error)
+	GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*GetUserInfoResponse, error)
 }
 
 type userServiceClient struct {
@@ -65,6 +67,15 @@ func (c *userServiceClient) LogOff(ctx context.Context, in *LogOffRequest, opts 
 	return out, nil
 }
 
+func (c *userServiceClient) ForcedOffline(ctx context.Context, in *ForcedOfflineRequest, opts ...grpc.CallOption) (*ForcedOfflineResponse, error) {
+	out := new(ForcedOfflineResponse)
+	err := c.cc.Invoke(ctx, "/pb.UserService/ForcedOffline", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userServiceClient) FindUser(ctx context.Context, in *FindUserRequest, opts ...grpc.CallOption) (*FindUserResponse, error) {
 	out := new(FindUserResponse)
 	err := c.cc.Invoke(ctx, "/pb.UserService/FindUser", in, out, opts...)
@@ -83,6 +94,15 @@ func (c *userServiceClient) MatchAUser(ctx context.Context, in *MatchAUserReques
 	return out, nil
 }
 
+func (c *userServiceClient) GetUserInfo(ctx context.Context, in *GetUserInfoRequest, opts ...grpc.CallOption) (*GetUserInfoResponse, error) {
+	out := new(GetUserInfoResponse)
+	err := c.cc.Invoke(ctx, "/pb.UserService/GetUserInfo", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
@@ -91,8 +111,10 @@ type UserServiceServer interface {
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	LogOff(context.Context, *LogOffRequest) (*LogOffResponse, error)
+	ForcedOffline(context.Context, *ForcedOfflineRequest) (*ForcedOfflineResponse, error)
 	FindUser(context.Context, *FindUserRequest) (*FindUserResponse, error)
 	MatchAUser(context.Context, *MatchAUserRequest) (*MatchAUserResponse, error)
+	GetUserInfo(context.Context, *GetUserInfoRequest) (*GetUserInfoResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -109,11 +131,17 @@ func (UnimplementedUserServiceServer) Register(context.Context, *RegisterRequest
 func (UnimplementedUserServiceServer) LogOff(context.Context, *LogOffRequest) (*LogOffResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LogOff not implemented")
 }
+func (UnimplementedUserServiceServer) ForcedOffline(context.Context, *ForcedOfflineRequest) (*ForcedOfflineResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ForcedOffline not implemented")
+}
 func (UnimplementedUserServiceServer) FindUser(context.Context, *FindUserRequest) (*FindUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FindUser not implemented")
 }
 func (UnimplementedUserServiceServer) MatchAUser(context.Context, *MatchAUserRequest) (*MatchAUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MatchAUser not implemented")
+}
+func (UnimplementedUserServiceServer) GetUserInfo(context.Context, *GetUserInfoRequest) (*GetUserInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserInfo not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 
@@ -182,6 +210,24 @@ func _UserService_LogOff_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_ForcedOffline_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ForcedOfflineRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).ForcedOffline(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.UserService/ForcedOffline",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).ForcedOffline(ctx, req.(*ForcedOfflineRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UserService_FindUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FindUserRequest)
 	if err := dec(in); err != nil {
@@ -218,6 +264,24 @@ func _UserService_MatchAUser_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetUserInfo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserInfo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.UserService/GetUserInfo",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserInfo(ctx, req.(*GetUserInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -238,12 +302,20 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserService_LogOff_Handler,
 		},
 		{
+			MethodName: "ForcedOffline",
+			Handler:    _UserService_ForcedOffline_Handler,
+		},
+		{
 			MethodName: "FindUser",
 			Handler:    _UserService_FindUser_Handler,
 		},
 		{
 			MethodName: "MatchAUser",
 			Handler:    _UserService_MatchAUser_Handler,
+		},
+		{
+			MethodName: "GetUserInfo",
+			Handler:    _UserService_GetUserInfo_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

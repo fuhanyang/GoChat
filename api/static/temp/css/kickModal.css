@@ -1,0 +1,190 @@
+/* 踢出用户弹窗样式 */
+.kick-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: none;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.kick-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background: white;
+    border-radius: 16px;
+    padding: 0;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+    display: none;
+    animation: modalSlideIn 0.4s ease-out forwards;
+    max-width: 400px;
+    width: 90%;
+    overflow: hidden;
+    cursor: default;
+}
+
+.kick-modal:hover {
+    transform: translate(-50%, -50%) scale(1.02);
+    transition: transform 0.2s ease;
+}
+
+.kick-modal:not(:hover) {
+    transform: translate(-50%, -50%) scale(1);
+    transition: transform 0.2s ease;
+}
+
+.kick-modal-header {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: white;
+    padding: 24px 24px 20px;
+    text-align: center;
+    position: relative;
+}
+
+.kick-modal-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.kick-modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    margin-bottom: 8px;
+}
+
+.kick-modal-subtitle {
+    font-size: 14px;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.kick-modal-body {
+    padding: 24px;
+    text-align: center;
+}
+
+.kick-modal-message {
+    font-size: 16px;
+    line-height: 1.6;
+    color: #333;
+    margin-bottom: 20px;
+    white-space: pre-line;
+}
+
+.kick-modal-reason {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 16px 0;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.kick-modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+.kick-modal-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+}
+
+.kick-modal-btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.kick-modal-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.kick-modal-btn-primary:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.kick-modal-btn-secondary {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+.kick-modal-btn-secondary:hover {
+    background: #e9ecef;
+    transform: translateY(-1px);
+}
+
+.kick-modal-btn-secondary:active {
+    transform: translateY(0);
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translate(-50%, -50%) scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    10%, 30%, 50%, 70%, 90% { transform: translate(-50%, -50%) scale(1.02) rotate(0.5deg); }
+    20%, 40%, 60%, 80% { transform: translate(-50%, -50%) scale(1.02) rotate(-0.5deg); }
+}
+
+.shake {
+    animation: shake 0.6s ease-in-out;
+}
+
+/* 响应式设计 */
+@media (max-width: 480px) {
+    .kick-modal {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .kick-modal-header {
+        padding: 20px 20px 16px;
+    }
+    
+    .kick-modal-body {
+        padding: 20px;
+    }
+    
+    .kick-modal-actions {
+        flex-direction: column;
+    }
+    
+    .kick-modal-btn {
+        width: 100%;
+    }
+} 

@@ -1,8 +1,7 @@
 package Models
 
 import (
-	"Message/DAO/Mysql"
-	"fmt"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -23,19 +22,18 @@ type Message struct {
 func (M *Message) GetContent() []byte {
 	return M.Content
 }
-func WriteMessage(message MessageInf) {
-	Mysql.MysqlDb.Create(message)
+func WriteMessage(db *gorm.DB, message MessageInf) {
+	db.Create(message)
 }
 
 // GetMessages 查找对应用户特定数量的消息
-func GetMessages[M MessageInf](senderAccountNum string, ReceiverAccountNum string, limit int) []M {
+func GetMessages[M MessageInf](db *gorm.DB, senderAccountNum string, ReceiverAccountNum string, limit int) []M {
 	Messages := make([]M, limit)
-	Mysql.MysqlDb.Where("sender = ? AND receiver = ?", senderAccountNum, ReceiverAccountNum).
+	db.Where("sender = ? AND receiver = ?", senderAccountNum, ReceiverAccountNum).
 		Or("sender = ? AND receiver = ?", ReceiverAccountNum, senderAccountNum).
 		Order("created_at desc").
 		Limit(limit).
 		Find(&Messages)
 	//
-	fmt.Println("GetMessages from ", senderAccountNum, "and", ReceiverAccountNum, Messages)
 	return Messages
 }

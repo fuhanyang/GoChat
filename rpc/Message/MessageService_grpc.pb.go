@@ -4,7 +4,7 @@
 // - protoc             v3.20.1
 // source: idl/MessageService.proto
 
-package Message
+package message
 
 import (
 	context "context"

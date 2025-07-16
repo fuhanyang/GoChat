@@ -1,28 +1,18 @@
 package Mysql
 
 import (
-	settings "Friend/Settings"
-	"fmt"
+	"common/mysql"
+	Models2 "friend/Models"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 )
 
 var MysqlDb *gorm.DB
 
-func Init(config *settings.MysqlConfig) error {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=true", config.UserName, config.Password, config.Host, config.Port, config.DbName)
-	var err error
-	MysqlDb, err = gorm.Open("mysql", dsn)
+func InitTable(config *mysql.MysqlConfig) {
+	MysqlDb.AutoMigrate(&Models2.Friend{})
+	err := Models2.AddCompositeUniqueIndex(MysqlDb, config.DbName)
 	if err != nil {
-		return err
+		panic(err)
 	}
-	MysqlDb.DB().SetMaxIdleConns(10)
-	MysqlDb.DB().SetMaxOpenConns(100)
-	fmt.Println("mysql connect success")
-	return nil
-
-}
-func MysqlClose() error {
-	return MysqlDb.Close()
-
 }

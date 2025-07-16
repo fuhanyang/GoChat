@@ -1,6 +1,6 @@
 app:
   name: "chatProgram"
-  mode: "dev"
+  mode: "online"
   port: 9090
   version: "1.0.0"
   log:
@@ -10,22 +10,30 @@ app:
     max_backups: 10
     max_age: 30
   mysql:
-    host: "8.137.19.65"
-    port: 13306
+    host: "mysql8019"
+    port: 3306
     user_name: "root"
-    password: "	iWyhpANxGk26ipRD"
+    password: "root"
     db_name: "my_app"
     max_open_conns: 10
     max_idle_conns: 5
   redis:
-    host: "8.137.19.65"
-    port: 26379
-    password: "fjfstkXHwbh2ztZh"
+    host: "redis"
+    port: 6379
+    password: ""
     db: 0
     network: "tcp"
     max_idle: 300
     max_active: 500
   grpc:
-    host: "8.137.19.65"
+    host: "message-service"
     port: 8973
     network: "tcp"
+  etcd:
+    host: "etcd"
+    port: 2379
+  service:
+    host: "message-service"
+    port: 8973
+    name: "message"
+    protocol: "app"

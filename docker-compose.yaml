@@ -54,6 +54,17 @@ services:
       - mysql8019
       - redis
       - etcd
+  websocket-service:
+    image: websocket-service:latest
+    ports:
+      - "18975:8975"
+      - "9090:9090"
+    command: sh -c "./wait-for-it.sh mysql8019:3306 -- ./wait-for-it.sh redis:6379 -- ./wait-for-it.sh etcd:2379 --  ./wait-for-it.sh some-rabbit:5672 -- ./websocket-service "
+    depends_on:
+      - mysql8019
+      - redis
+      - etcd
+      - some-rabbit
   mq-server:
     image: mq-server:latest
     ports:
@@ -62,11 +73,11 @@ services:
     depends_on:
       - some-rabbit
       - etcd
-  my_server:
-    image: my_server
+  my_api:
+    image: my_api
     ports:
       - "8080:8080"
-    command: sh -c "./wait-for-it.sh some-rabbit:5672 -- ./my_server"
+    command: sh -c "./wait-for-it.sh some-rabbit:5672 -- ./my_api"
     depends_on:
       - some-rabbit
 

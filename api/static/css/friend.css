@@ -1,0 +1,99 @@
+
+#friendListScrollWrapper {
+    --theme-color: #5b7cff; /* 定义主题色变量 */
+    max-height: 150px; /* 更自然的高度 */
+    height: 150px;
+    max-width: 650px;
+    width: 100%;
+    position: relative;
+    overflow-y: auto;
+    border-radius: 12px; /* 优化圆角 */
+    margin-left: auto;
+    background: #fcfdff;
+    box-shadow:
+            0 4px 20px rgba(0, 0, 0, 0.08), /* 主阴影 */
+            inset 0 1px 1px rgba(255, 255, 255, 0.3); /* 内发光 */
+    padding: 8px 0; /* 调整内边距 */
+
+    /* 自定义滚动条 */
+    scrollbar-width: thin;
+    scrollbar-color: var(--theme-color) #f1f3ff;
+}
+
+#friendList {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    margin: 0; /* 去掉外边距 */
+}
+
+#friendList li {
+    position: relative; /* 用于伪元素 */
+    background: linear-gradient(to right, transparent 95%, rgba(143, 167, 255, 0.08));
+    padding: 5px; /* 内边距 */
+    margin-bottom: 10px; /* 下边距 */
+    border-radius: 5px; /* 圆角 */
+    width: 96%;
+    left: 1%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+    overflow-y:auto ;
+    max-height: 50px; /* 最大高度 */
+    display: flex;
+    align-items: center; /* 垂直居中 */
+    justify-content: space-between; /* 项目两端对齐 */
+    transition: transform 0.2s ease; /* 平滑过渡 */
+}
+#friendList li span {
+    display: none;
+    position: absolute;
+    left: 30%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    color: #004000;
+    padding: 5px;
+    border-radius: 3px;
+    white-space: nowrap;
+    font-size: 12px; /* 字体大小 */
+    z-index: 10;
+}
+
+#friendList li:hover span {
+    display: block;
+}
+#friendList li:hover {
+    background: #f6f8ff;
+    box-shadow: 2px 2px 8px rgba(91, 124, 255, 0.1);
+    transform: translateY(-2px); /* 鼠标悬停时轻微上移 */
+}
+/* 点击反馈 */
+#friendList li:active {
+    transform: scale(0.98);
+}
+/* 分隔线 */
+#friendList li + li {
+    border-top: 1px solid rgba(200, 212, 255, 0.2);
+}
+
+/* 滚动条样式 */
+#friendListScrollWrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+#friendListScrollWrapper::-webkit-scrollbar-thumb {
+    background: var(--theme-color);
+    border-radius: 3px;
+}
+
+#friendListScrollWrapper::-webkit-scrollbar-track {
+    background: #f8faff;
+}
+
+/* 头像占位符样式 */
+.friend-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-right: 12px;
+    background: linear-gradient(135deg, #e9efff, #d3ddff); /* 渐变背景 */
+}
+

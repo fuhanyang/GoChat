@@ -1,0 +1,12 @@
+app:
+  mode: "online"
+  name: App
+  version: 1.0.0
+  rabbitmq:
+    host: "some-rabbit"
+    port: 5672
+    username: "root"
+    password: "root"
+  etcd:
+    host: "etcd"
+    port: 2379
