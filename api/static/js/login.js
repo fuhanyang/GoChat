@@ -1,5 +1,5 @@
 let Password = "";
-let host = "8.137.19.65"
+let host = "localhost"//"8.137.19.65"
 let port = "8080"
 let base_url
 let account_num

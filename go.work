@@ -9,6 +9,8 @@ use (
 	./api
 	./rpc
 	./app/friend
+	./app/group
 	./app/websocket
 	./common
+	app/fileHandler
 )

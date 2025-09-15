@@ -1,6 +1,6 @@
 app:
   name: "websocket"
-  port: 9999
+  port: 9090
   mode: "debug"
   host: "localhost"
   log:
@@ -39,6 +39,6 @@ app:
     protocol: "app"
   rabbitmq:
     host: "localhost"
-    port: 8080
-    username: "user"
-    password: "56563096660fc"
+    port: 5672
+    username: "guest"
+    password: "123456"

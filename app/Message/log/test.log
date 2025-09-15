@@ -1,2 +1,0 @@
-{"level":"INFO","ts":"2025-07-15T23:03:22.997+0800","caller":"chain/MyHandlerFunc.go:232","msg":"Chain execution completed successfully in 144.788ms"}
-{"level":"INFO","ts":"2025-07-15T23:03:23.663+0800","caller":"chain/MyHandlerFunc.go:232","msg":"Chain execution completed successfully in 6.6583ms"}

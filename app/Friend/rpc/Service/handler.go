@@ -82,7 +82,7 @@ ERR:
 	fmt.Println(err)
 	resp.Msg = err.Error()
 	resp.Code = 500
-	return &resp, err
+	return &resp, nil
 }
 func (s *server) GetFriends(ctx context.Context, req *friend.GetFriendsRequest) (*friend.GetFriendsResponse, error) {
 	var (
@@ -148,5 +148,5 @@ ERR:
 	fmt.Println(err)
 	resp.Msg = err.Error()
 	resp.Code = 500
-	return &resp, err
+	return &resp, nil
 }

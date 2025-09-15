@@ -7,6 +7,7 @@ import (
 	"common/viper"
 	"common/zap"
 	"context"
+	"flag"
 	"fmt"
 	"net"
 	"os"
@@ -29,6 +30,15 @@ var (
 )
 
 func main() {
+	mode := flag.String("mode", "local", "运行模式，可选值：local(默认)、debug")
+	flag.Parse()
+
+	err = viper.Init(settings.Config, *mode)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("config init success mode:", *mode)
+
 	defer func() {
 		for _, f := range defers {
 			f()
@@ -44,11 +54,6 @@ func newBloomFilter(bitmapLen int64, hashCount int32) {
 	authentication.NewBloomFilter(bitmapLen, hashCount, Mysql.Db)
 }
 func userInit() {
-	err = viper.Init(settings.Config)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("config init success mode:", settings.Config.Mode)
 	Redis.Pool = redis.Init(settings.Config.RedisConfig)
 	Redis.Client = redis.InitRedisLock(settings.Config.RedisConfig)
 	err = snowflake.Init(settings.Config.SnowflakeConfig)

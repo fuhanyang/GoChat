@@ -1,0 +1,1 @@
+{"level":"ERROR","ts":"2025-07-23T18:19:33.950+0800","caller":"authentication/userSignUp.go:36","msg":"Chain execution failed after 2562047h47m16.854775807s: username already exists"}

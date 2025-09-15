@@ -7,6 +7,7 @@ import (
 	"common/viper"
 	"common/zap"
 	"context"
+	"flag"
 	"fmt"
 	"friend/DAO/Mysql"
 	"friend/DAO/Redis"
@@ -41,8 +42,15 @@ func execPath() (string, error) {
 	return filepath.Abs(file)
 }
 func main() {
-	s, _ := execPath()
-	fmt.Println("exec path:", s)
+	mode := flag.String("mode", "local", "运行模式，可选值：local(默认)、debug")
+	flag.Parse()
+
+	err = viper.Init(settings.Config, *mode)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("config init success mode:", *mode)
+
 	defer func() {
 		for _, f := range defers {
 			f()
@@ -54,11 +62,6 @@ func main() {
 	serve()
 }
 func friendInit() {
-	err := viper.Init(settings.Config)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("config init success mode:", settings.Config.Mode)
 
 	Mysql.MysqlDb, err = mysql.Init(settings.Config.MysqlConfig)
 	if err != nil {

@@ -6,18 +6,22 @@ import (
 	"api/rpc/client"
 	"api/settings"
 	"common/viper"
+	"flag"
 	"fmt"
 	"rpc/Service/Init"
 )
 
 func main() {
+	mode := flag.String("mode", "local", "运行模式，可选值：local(默认)、debug")
+	flag.Parse()
+
 	Init.InitService()
 	var err error
-	err = viper.Init(settings.Config)
+	err = viper.Init(settings.Config, *mode)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("config init success mode:", settings.Config.Mode)
+	fmt.Println("config init success mode:", *mode)
 	err = Mq.NewConnCh(settings.Config.RabbitMQConfig)
 	if err != nil {
 		panic(err)

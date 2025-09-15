@@ -6,6 +6,7 @@ import (
 	"common/viper"
 	"common/zap"
 	"context"
+	"flag"
 	"message/DAO/Mysql"
 	"message/DAO/Redis"
 	"message/rpc/service"
@@ -28,6 +29,15 @@ var (
 )
 
 func main() {
+	mode := flag.String("mode", "local", "运行模式，可选值：local(默认)、debug")
+	flag.Parse()
+
+	err = viper.Init(settings.Config, *mode)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("config init success mode:", *mode)
+
 	defer func() {
 		for _, f := range defers {
 			f()
@@ -39,11 +49,6 @@ func main() {
 }
 func messageInit() {
 
-	err = viper.Init(settings.Config)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("config init success mode:", settings.Config.Mode)
 	Redis.Pool = redis.Init(settings.Config.RedisConfig)
 
 	err = Mysql.Init(settings.Config.MysqlConfig)

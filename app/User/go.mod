@@ -10,6 +10,7 @@ require (
 	github.com/gomodule/redigo v1.9.2
 	github.com/jefferyjob/go-redislock v1.1.4
 	github.com/jinzhu/gorm v1.9.16
+	gorm.io/gorm v1.30.0
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/spaolacci/murmur3 v1.1.0
 	github.com/spf13/viper v1.19.0

@@ -126,19 +126,4 @@ func (c *FriendServiceHandler) Handle(ctx context.Context, Handler method.Method
 		err = respValue[1].Interface().(error)
 	}
 	return responseJson, err
-
-	//switch Handler.GetHandlerName() {
-	//case "GetFriends":
-	//	getFriendRequest := Handler.(*friend.GetFriendsRequest)
-	//	response, _ = c.Client.GetFriends(ctx, getFriendRequest)
-	//	responseJson, err = json.Marshal(response.(*friend.GetFriendsResponse))
-	//case "AddFriend":
-	//	addFriendRequest := Handler.(*friend.AddFriendRequest)
-	//	response, _ = c.Client.AddFriend(ctx, addFriendRequest)
-	//	responseJson, err = json.Marshal(response.(*friend.AddFriendResponse))
-	//}
-	//if response != nil && response.GetCode() != StatusCode.StatusOK {
-	//	err = errors.New(Handler.GetHandlerName() + " get error")
-	//}
-	//return responseJson, err
 }

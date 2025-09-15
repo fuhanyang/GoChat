@@ -22,11 +22,11 @@ func (s *server) TryConnect(ctx context.Context, req *Websocket.TryConnectReques
 		token string
 	)
 	// 检验用户是否存在
-	user, err := client.UserServiceClient.Client.FindUser(ctx, &user.FindUserRequest{AccountNum: req.GetAccountNum()})
+	_user, err := client.UserServiceClient.Client.FindUser(ctx, &user.FindUserRequest{AccountNum: req.GetAccountNum()})
 	if err != nil {
 		return res, err
 	}
-	if user == nil {
+	if _user == nil {
 		err = errors.New("用户不存在")
 		return res, err
 	}
@@ -49,7 +49,9 @@ func (s *server) KickUser(ctx context.Context, req *Websocket.KickUserRequest) (
 
 	err = websocket.KickUser(req.Reason, req.GetAccountNum())
 	if err != nil {
-		return res, err
+		res.Code = 500
+		res.Msg = "踢下线失败"
+		return res, nil
 	}
 	res.Msg = "用户已被踢下线"
 	res.Code = 200

@@ -50,7 +50,6 @@ func CreateFriend(db *gorm.DB, user1, user2, user1Name, user2Name string) error 
 		User1Name: user1Name,
 		User2Name: user2Name,
 	}).Error
-
 	if err != nil {
 		if strings.Contains(err.Error(), "Duplicate entry") {
 			return ErrDuplicateFriend

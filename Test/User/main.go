@@ -74,8 +74,8 @@ func main() {
 	//	}
 	//	fmt.Println(res2)
 	//}
-
 	// 连接消息队列
+
 	err := NewConnCh()
 	if err != nil {
 		panic(err)

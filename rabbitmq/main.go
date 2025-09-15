@@ -5,6 +5,7 @@ import (
 	"common/viper"
 	"common/zap"
 	"context"
+	"flag"
 	"fmt"
 	"github.com/streadway/amqp"
 	clientv3 "go.etcd.io/etcd/client/v3"
@@ -30,11 +31,14 @@ var etcdClient *clientv3.Client
 
 func main() {
 	var err error
-	err = viper.Init(settings.Config)
+	mode := flag.String("mode", "local", "运行模式，可选值：local(默认)、debug")
+	flag.Parse()
+
+	err = viper.Init(settings.Config, *mode)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("config init success mode:", settings.Config.Mode)
+	fmt.Println("config init success mode:", *mode)
 
 	// 初始化zap日志
 	path, err := os.Getwd()
@@ -130,6 +134,7 @@ func ListenQueues() {
 						fmt.Println("res is nil")
 						continue
 					}
+					chain.ZapLogger("info", "rpc handle success: %s", res)
 					// 发送响应给server
 					err = queue.GivesResponseTo(delivery.ReplyTo, delivery.CorrelationId, res)
 					if err != nil {

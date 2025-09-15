@@ -31,7 +31,7 @@ func (s *server) register(ctx context.Context, req *user.RegisterRequest) (*user
 		fmt.Println(err)
 		resp.Msg = err.Error()
 		resp.Code = 502
-		return resp, err
+		return resp, nil
 	}
 	resp.Code = Const.StatusOK
 	resp.Msg = "Register success"
@@ -48,7 +48,7 @@ func (s *server) Login(ctx context.Context, req *user.LoginRequest) (*user.Login
 		fmt.Println(err)
 		resp.Msg = err.Error()
 		resp.Code = 501
-		return resp, err
+		return resp, nil
 	}
 	resp.Code = Const.StatusOK
 	resp.Msg = "Login success"
@@ -63,7 +63,7 @@ func (s *server) LogOff(ctx context.Context, req *user.LogOffRequest) (*user.Log
 		fmt.Println(err)
 		resp.Msg = err.Error()
 		resp.Code = 503
-		return resp, err
+		return resp, nil
 	}
 	resp.Code = Const.StatusOK
 	resp.Msg = "LogOff success"
@@ -89,7 +89,7 @@ ERR:
 	fmt.Println(err)
 	resp.Msg = err.Error()
 	resp.Code = 504
-	return resp, err
+	return resp, nil
 
 }
 func (s *server) MatchAUser(ctx context.Context, req *user.MatchAUserRequest) (*user.MatchAUserResponse, error) {
@@ -102,13 +102,13 @@ func (s *server) MatchAUser(ctx context.Context, req *user.MatchAUserRequest) (*
 		fmt.Println(err)
 		resp.Msg = err.Error()
 		resp.Code = 505
-		return resp, err
+		return resp, nil
 	}
 	if _user == nil {
 		err = errors.New("_user is nil !!!!")
 		resp.Msg = err.Error()
 		resp.Code = 505
-		return resp, err
+		return resp, nil
 	}
 	resp.Code = Const.StatusOK
 	resp.Msg = "Match a _user success"
@@ -133,7 +133,7 @@ func (s *server) GetUserInfo(ctx context.Context, req *user.GetUserInfoRequest) 
 		fmt.Println(err)
 		resp.Msg = err.Error()
 		resp.Code = 506
-		return resp, err
+		return resp, nil
 	}
 	resp.Code = Const.StatusOK
 	resp.Msg = "Get user info success"

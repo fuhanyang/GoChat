@@ -47,7 +47,7 @@ func (s *server) SendText(ctx context.Context, req *message.SendTextRequest) (*m
 	}
 	res.Msg = "SendText Success"
 	res.Code = Const.StatusOK
-	return &res, err
+	return &res, nil
 ERR:
 	fmt.Println(err)
 	res.Msg = "Error :" + err.Error()
