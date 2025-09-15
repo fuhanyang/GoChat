@@ -1,5 +1,6 @@
 package models
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 type GroupSettings struct {
@@ -8,3 +9,5 @@ type GroupSettings struct {
 	GroupType     string
 }
 >>>>>>> 2f4b59e ("latest update")
+=======
+>>>>>>> f07d8cb712af6cc475a8a13376802bdb57e3b5b5

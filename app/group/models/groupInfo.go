@@ -1,12 +1,16 @@
 package models
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> f07d8cb712af6cc475a8a13376802bdb57e3b5b5
 import "gorm.io/gorm"
 
 type GroupInfo struct {
 	GroupID int `json:"group_id" gorm:"primary_key"`
 	gorm.Model
 }
+<<<<<<< HEAD
 =======
 import (
 	"common/snowflake"
@@ -123,3 +127,5 @@ func CreateGroup(db *gorm.DB, groupName string, groupDesc string, groupLeader st
 	return groupInfo.UID, nil
 }
 >>>>>>> 2f4b59e ("latest update")
+=======
+>>>>>>> f07d8cb712af6cc475a8a13376802bdb57e3b5b5
